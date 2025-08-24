@@ -1,12 +1,14 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig = {
-    output: 'export', // Статический экспорт
-    basePath: '/next_myfin', // Подкаталог для GitHub Pages
-    assetPrefix: '/next_myfin/', // Префикс для ресурсов
+    output: 'export',
+    basePath: isProd ? '/next_myfin' : '', // /next_myfin для продакшена, пустой для разработки
+    assetPrefix: isProd ? '/next_myfin/' : '/', // Аналогично для ресурсов
     images: {
-        unoptimized: true, // Отключает оптимизацию изображений
+        unoptimized: true,
     },
-    distDir: 'docs', // Указывает, что выходная папка — docs вместо out
+    distDir: 'docs',
 };
 
 export default nextConfig;

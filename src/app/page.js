@@ -2,7 +2,7 @@ import Image from "next/image";
 import styles from "./page.module.css";
 
 export default function Home() {
-  const BASE_PATH = '/next_myfin';
+  const BASE_PATH = process.env.NODE_ENV === 'production' ? '/next_myfin' : '';
 
   return (
     <div className={styles.page}>

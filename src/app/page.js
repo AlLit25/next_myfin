@@ -1,8 +1,8 @@
 import Image from "next/image";
 import styles from "./page.module.css";
-import {BASE_PATH} from 'lib/constants';
 
 export default function Home() {
+  const BASE_PATH = '/next_myfin';
 
   return (
     <div className={styles.page}>

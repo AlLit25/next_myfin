@@ -32,5 +32,5 @@ npm run dev
 
 5. Надішліть зміни до репозиторію:
    ```bash
-   git push origin master
+   git push origin main
    ```

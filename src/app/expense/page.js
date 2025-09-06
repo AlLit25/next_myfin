@@ -1,6 +1,6 @@
 import NavButton from "@/components/NavButton";
 
-export default function Income() {
+export default function Expense() {
     return (
         <div>
             <div className="mt-3 text-center">

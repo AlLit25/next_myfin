@@ -8,3 +8,14 @@ export const TABLE = {
     "main": "fin_statistic",
     "balance": "fin_balance"
 }
+export const category = {
+    "pr": "Продукти",
+    "cf": "Кафе",
+    "cm": "Кумунальні платежі",
+    "md": "Аптека",
+    "eva": "Eva/Makeup",
+    "zoo": "Зоотовари",
+    "cl": "Одяг",
+    "usd": "Валюта",
+    "ot": "Інше",
+}

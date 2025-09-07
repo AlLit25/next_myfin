@@ -5,51 +5,63 @@ import {getStatistic, removeCookies} from "@/lib/DbHelper";
 import {useEffect, useState} from "react";
 import Load from "@/components/Load";
 import {getCurrentDay} from "@/lib/DateHelper";
-import {sort} from "next/dist/build/webpack/loaders/css-loader/src/utils";
+import IncomeTable from "@/components/statistic/IncomeTable";
+import ExpenseTable from "@/components/statistic/ExpenseTable";
 
 export default function Statistic() {
-    const [data, setData] = useState({ income: [], expense: [] }); // Ініціалізуємо як об’єкт
+    const [data, setData] = useState({ income: [], expense: [] });
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [dateRange, setDateRange] = useState(getCurrentDay()); // Стан для дат
 
-    useEffect(() => {
-        async function getData() {
-            try {
-                const defaultDate = getCurrentDay();
+    // Функція для отримання даних
+    const fetchData = async (from, to) => {
+        try {
+            setIsLoading(true);
+            setError(null);
+            const rawData = await getStatistic(from, to);
 
-                const rawData = await getStatistic(defaultDate.from, defaultDate.to);
-
-                if (rawData.error) {
-                    setError(rawData.error);
-                    setData({ income: [], expense: [] });
-                } else {
-                    const sortData = { income: [], expense: [] };
-                    (rawData.data || []).forEach((item) => {
-                        if (item.type === "expense") {
-                            sortData.expense.push(item);
-                        } else if (item.type === "income") {
-                            sortData.income.push(item);
-                        }
-                    });
-
-                    setData(sortData);
-                }
-                setIsLoading(false);
-            } catch (err) {
-                setError('Помилка завантаження даних');
+            if (rawData.error) {
+                setError(rawData.error);
                 setData({ income: [], expense: [] });
-                setIsLoading(false);
-                removeCookies();
-                location.replace('/');
+            } else {
+                const sortData = { income: [], expense: [] };
+                (rawData.data || []).forEach((item) => {
+                    if (item.type === "expense") {
+                        sortData.expense.push(item);
+                    } else if (item.type === "income") {
+                        sortData.income.push(item);
+                    }
+                });
+                setData(sortData);
             }
+            setIsLoading(false);
+        } catch (err) {
+            setError('Помилка завантаження даних');
+            setData({ income: [], expense: [] });
+            setIsLoading(false);
+            removeCookies();
+            location.replace('/');
         }
+    };
 
-        getData();
+    // Завантаження даних при першому рендері
+    useEffect(() => {
+        fetchData(dateRange.from, dateRange.to);
     }, []);
 
-    if (isLoading) {
-        return <Load />;
-    }
+    // Обробник кліку на кнопку "Відобразити"
+    const showData = () => {
+        const fromInput = document.querySelector('input[data-date-from]').value;
+        const toInput = document.querySelector('input[data-date-to]').value;
+
+        if (fromInput && toInput) {
+            setDateRange({ from: fromInput, to: toInput });
+            fetchData(fromInput, toInput);
+        } else {
+            setError('Будь ласка, виберіть обидві дати');
+        }
+    };
 
     return (
         <div className="container mt-5">
@@ -59,36 +71,42 @@ export default function Statistic() {
             <div className="d-block mb-3">
                 <NavButton href="/" color="secondary" text="На головну" />
             </div>
+            <div className="row mt-3 mb-3">
+                <div className="col-4">
+                    <input type="date"
+                           className="form-control"
+                           value={dateRange.from}
+                           data-date-from
+                           onChange={(e) =>
+                               setDateRange({ ...dateRange, from: e.target.value })}/>
+                </div>
+                <div className="col-4">
+                    <input type="date"
+                           className="form-control"
+                           data-date-to
+                           value={dateRange.to}
+                           onChange={(e) =>
+                               setDateRange({ ...dateRange, to: e.target.value })}/>
+                </div>
+                <div className="col-4">
+                    <button type="button"
+                            className="btn btn-success"
+                            onClick={showData}>
+                        Відобразити
+                    </button>
+                </div>
+            </div>
             <div>
                 {error ? (
                     <div className="alert alert-danger" role="alert">
                         {error}
                     </div>
-                ) : data.income.length > 0 ? (
-                    <table className="table table-striped">
-                        <thead>
-                        <tr>
-                            <th colSpan="2">Дохід</th>
-                        </tr>
-                        <tr>
-                            <th>Сума</th>
-                            <th>Дата створення</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {data.income.map((item) => (
-                            <tr key={item.id}>
-                                <td>{item.sum}</td>
-                                <td>{new Date(item.created_at).toLocaleDateString('uk-UA')}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <div className="alert alert-info" role="alert">
-                        Дані відсутні
-                    </div>
-                )}
+                ) : isLoading
+                    ?  <Load header={false} />
+                    : <div>
+                        <IncomeTable data={data.income} />
+                        <ExpenseTable data={data.expense} />
+                    </div>}
             </div>
         </div>
     );

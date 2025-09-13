@@ -20,11 +20,11 @@ export async function checkAuth() {
 
         try {
             sessionData = JSON.parse(authToken);
-        } catch (parseError) {
-            return false;
-        }
 
-        if (!sessionData.access_token || !sessionData.refresh_token) {
+            if (!sessionData.access_token || !sessionData.refresh_token) {
+                return false;
+            }
+        } catch (parseError) {
             return false;
         }
 
@@ -49,7 +49,7 @@ export async function checkAuth() {
             return session;
         }
     } catch (err) {
-        console.error('Помилка перевірки автентифікації:', err.message);
+        console.error('Помилка перевірки автентифікації:', err.message, err.line);
         return false;
     }
 }
@@ -96,21 +96,36 @@ export async function getStatistic(from, to) {
 }
 
 // Додавання даних до таблиці
-// export async function insertData(data, setError) {
-//     try {
-//         const { error } = await DB.from(TABLE.main).insert([data]);
-//         if (error) {
-//             console.error(`Помилка додавання до ${table}:`, error.message);
-//             setError(error.message);
-//             return false;
-//         }
-//         return true;
-//     } catch (err) {
-//         console.error('Помилка запиту:', err.message);
-//         setError('Помилка запиту: ' + err.message);
-//         return false;
-//     }
-// }
+export async function insertData(date, sum, type, category, comment) {
+    try {
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            throw 'Користувач не авторизований';
+        }
+
+        const session = JSON.parse(getAuthToken());
+        const data = {
+            'sum': sum,
+            'type': type,
+            'user_id': session.user.id,
+            'created_at': new Date(date),
+            'category': category || null,
+            'comment': comment || null,
+        }
+
+        const { error } = await DB.from(TABLE.main).insert([data]);
+
+        if (error) {
+            throw error;
+        }
+
+        return true;
+    } catch (err) {
+        console.error('Помилка запиту:', err.message);
+        return false;
+    }
+}
 
 // Видалення даних із таблиці
 // export async function deleteData(table, id, setError) {

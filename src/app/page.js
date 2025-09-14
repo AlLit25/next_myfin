@@ -11,8 +11,6 @@ export default function Home() {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // setIsMounted(true);
-
         async function initializeAuth() {
             try {
                 const authSuccess = await checkAuth();
@@ -35,7 +33,7 @@ export default function Home() {
         initializeAuth();
     }, []);
 
-    console.log('Рендеринг Home:', 'isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
+    // console.log('Рендеринг Home:', 'isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
 
     if (isLoading) {
         return (<Load />);

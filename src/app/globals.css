@@ -13,41 +13,92 @@ input.i-default {
 
 .c-modal {
   position: fixed;
-  top: 0;
+  top: 20px;
   left: 0;
   right: 0;
-  bottom: 0;
   display: flex;
-  /*align-items: center;*/
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.5s ease-in-out, fadeOut 0.5s ease-in-out 1.5s forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes fadeOut {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.8);
-    display: none;
-  }
 }
 
 .modal-dialog {
-  max-width: 400px;
+  max-width: 400px; /* Обмежуємо ширину для компактності */
   width: 100%;
+}
+
+.fade-in {
+  animation: slideInFromTop 0.5s ease-in-out forwards;
+}
+
+.fade-out {
+  animation: slideOutToTop 0.5s ease-in-out forwards;
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOutToTop {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+.value {
+  display: inline-block;
+  width: 60px; /* Фіксована ширина для всіх значень */
+  text-align: right;
+}
+.zero-value {
+  display: inline-block;
+  width: 60px; /* Така ж ширина, як у .value */
+  text-align: right;
+}
+.expense-border {
+  border-bottom: 1px solid lightgray;
+}
+
+.category-column {
+  white-space: nowrap;
+}
+
+.scrollable-table {
+  display: flex;
+  overflow-x: auto; /* Горизонтальна прокрутка */
+  white-space: nowrap; /* Запобігає перенесенню стовпців */
+  padding-bottom: 0.5rem; /* Відступ для смуги прокрутки */
+  box-sizing: border-box;
+}
+
+/* Стилі смуги прокрутки (WebKit) */
+.scrollable-table::-webkit-scrollbar {
+  height: 8px;
+}
+.scrollable-table::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.scrollable-table::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+.scrollable-table::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Стилі смуги прокрутки (Firefox) */
+.scrollable-table {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 }

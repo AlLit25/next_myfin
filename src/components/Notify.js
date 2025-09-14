@@ -1,30 +1,28 @@
 'use client'
 
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 
-export default function Notify({ show, text, type }) {
-    const [isVisible, setIsVisible] = useState(false);
-
+export default function Notify({ show, text, setShowDefault }) {
     useEffect(() => {
-        if (show === 'block') {
-            setIsVisible(true);
+        if (show) {
             const timer = setTimeout(() => {
-                setIsVisible(false);
+                setShowDefault(false);
             }, 2000);
-           clearTimeout(timer);
+            return () => clearTimeout(timer);
         }
     }, [show]);
 
+    if (!show && text.length === 0) return null;
+
     return (
         <div
-            className={isVisible ? 'c-modal' : 'd-none'}
+            className={`c-modal ${show ? "fade-in" : "fade-out"}`}
             id="exampleModal"
             tabIndex="-1"
             aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-        >
+            aria-hidden="true">
             <div className="modal-dialog text-center">
-                <div className={`alert alert-${type} pt-3`} role="alert">
+                <div className="alert alert-primary pt-3" role="alert">
                     {text}
                 </div>
             </div>

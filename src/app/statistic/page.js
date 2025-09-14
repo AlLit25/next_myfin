@@ -7,6 +7,7 @@ import Load from "@/components/Load";
 import {getCurrentDay} from "@/lib/DateHelper";
 import IncomeTable from "@/components/statistic/IncomeTable";
 import ExpenseTable from "@/components/statistic/ExpenseTable";
+import ExpenseAll from "@/components/statistic/ExpenseAll";
 
 export default function Statistic() {
     const [data, setData] = useState({ income: [], expense: [] });
@@ -105,7 +106,8 @@ export default function Statistic() {
                     ?  <Load header={false} />
                     : <div>
                         <IncomeTable data={data.income} />
-                        <ExpenseTable data={data.expense} />
+                        {/*<ExpenseTable data={data.expense} />*/}
+                        <ExpenseAll data={data.expense} />
                     </div>}
             </div>
         </div>

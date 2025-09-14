@@ -11,32 +11,34 @@ export default function Income() {
     const [dateInfo, setDateInfo] = useState(getCurrentDay());
     const [incomeSum, setIncomeSum] = useState('');
     const [blockBtn, setBlock] = useState(false);
-    const [showNotify, setShowNotify] = useState('none');
+    const [showNotify, setShowNotify] = useState(false);
     const [textNotify, setTextNotify] = useState('');
-    const [typeNotify, setTypeNotify] = useState('success');
 
     function addIncome() {
         setBlock(true);
+        if (Number(incomeSum) > 0) {
+            insertData(dateInfo.from, incomeSum, 'income', '', '').then(res => {
+                setShowNotify(true);
 
-        insertData(dateInfo.from, incomeSum, 'income', '', '').then(res => {
-            setShowNotify('block');
+                if (res) {
+                    setIncomeSum('');
+                    setTextNotify('Данні додано успішно');
+                } else {
+                    setTextNotify('Не вдалось додати дані');
+                }
 
-            if (res) {
-                setIncomeSum('');
-                setTextNotify('Данні додано успішно');
-                setTypeNotify('success');
-            } else {
-                setTextNotify('Не вдалось додати дані');
-                setTypeNotify('danger');
-            }
-
+                setBlock(false);
+            });
+        } else {
+            setShowNotify(true);
+            setTextNotify('Поле сумма не може бути порожнім');
             setBlock(false);
-        });
+        }
     }
 
     return (
         <div>
-            <Notify show={showNotify} text={textNotify} type={typeNotify} />
+            <Notify show={showNotify} text={textNotify} setShowDefault={setShowNotify} />
             <div className="mt-3 text-center">
                 <h1>Дохід</h1>
             </div>

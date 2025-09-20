@@ -3,8 +3,9 @@
 import NavButton from "@/components/NavButton";
 import {getStatistic, removeCookies} from "@/lib/DbHelper";
 import {useEffect, useState} from "react";
+import { isMobile } from 'react-device-detect';
 import Load from "@/components/Load";
-import {getCurrentDay} from "@/lib/DateHelper";
+import {getCurrentDay, getCurrentMonth} from "@/lib/DateHelper";
 import IncomeTable from "@/components/statistic/IncomeTable";
 import ExpenseTable from "@/components/statistic/ExpenseTable";
 import ExpenseAll from "@/components/statistic/ExpenseAll";
@@ -13,9 +14,11 @@ export default function Statistic() {
     const [data, setData] = useState({ income: [], expense: [] });
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [dateRange, setDateRange] = useState(getCurrentDay()); // Стан для дат
 
-    // Функція для отримання даних
+    const [dateRange, setDateRange] = useState(isMobile
+        ? getCurrentDay()
+        : getCurrentMonth());
+
     const fetchData = async (from, to) => {
         try {
             setIsLoading(true);
@@ -77,14 +80,14 @@ export default function Statistic() {
                     <input type="date"
                            className="form-control"
                            value={dateRange.from}
-                           data-date-from
+                           data-date-from=""
                            onChange={(e) =>
                                setDateRange({ ...dateRange, from: e.target.value })}/>
                 </div>
                 <div className="col-4">
                     <input type="date"
                            className="form-control"
-                           data-date-to
+                           data-date-to=""
                            value={dateRange.to}
                            onChange={(e) =>
                                setDateRange({ ...dateRange, to: e.target.value })}/>
@@ -106,8 +109,9 @@ export default function Statistic() {
                     ?  <Load header={false} />
                     : <div>
                         <IncomeTable data={data.income} />
-                        {/*<ExpenseTable data={data.expense} />*/}
-                        <ExpenseAll data={data.expense} />
+                        { isMobile
+                            ? <ExpenseTable data={data.expense} />
+                            : <ExpenseAll data={data.expense} dateStart={dateRange.from} dateEnd={dateRange.to} />}
                     </div>}
             </div>
         </div>

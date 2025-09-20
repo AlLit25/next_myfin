@@ -18,7 +18,8 @@ export default function Expense() {
 
     function addExpense() {
         setBlock(true);
-        if (Number(expenseSum) > 0) {
+
+        if (Number(expenseSum) > 0 && expenseCat.length > 0) {
             insertData(dateInfo.from, expenseSum, 'expense', expenseCat, expenseComment).then(res => {
                 setShowNotify(true);
 
@@ -34,7 +35,7 @@ export default function Expense() {
             });
         } else {
             setShowNotify(true);
-            setTextNotify('Поле сумма не може бути порожнім');
+            setTextNotify('Поле категорія та сумма не можуть бути порожніми');
             setBlock(false);
         }
     }

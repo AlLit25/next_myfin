@@ -1,12 +1,14 @@
 import {category} from "@/lib/supabase";
-import {getTotalSum} from "@/lib/BaseHelper";
+import {getDataForChart, getDatesInRange, getSortDataCat, getTotalSum, getTotalSumInCat} from "@/lib/BaseHelper";
 import React from "react";
+import PieChartComp from '@/components/statistic/PieChart';
 
-export default function ExpenseAll({ data }) {
-    const sortData = getSortData(data);
-    const totalSum  = getTotalSum(data);
-
-    const sortedDates = Object.keys(sortData).sort((a, b) => new Date(a) - new Date(b));
+export default function ExpenseAll({ data, dateStart, dateEnd }) {
+    const sortData = getSortDataCat(data);
+    const totalSum = getTotalSum(data);
+    const allDates = getDatesInRange(dateStart, dateEnd);
+    const totalSumInCats = getTotalSumInCat(sortData);
+    const chartData = getDataForChart(totalSum, totalSumInCats);
 
     return (
         <div>
@@ -16,10 +18,17 @@ export default function ExpenseAll({ data }) {
             <div className="d-flex mb-5">
                 <CategoryColumns />
                 <div className="d-flex scrollable-table">
-                    {sortedDates.map(date => (
-                        <GetColumn key={date} date={date} items={sortData[date]} />
+                    {allDates.map(date => (
+                        <GetColumn
+                            key={date}
+                            date={date}
+                            items={sortData[date] || {}}
+                        />
                     ))}
                 </div>
+            </div>
+            <div className="d-flex justify-content-center">
+                <PieChartComp data={chartData} />
             </div>
         </div>
     );
@@ -53,18 +62,3 @@ function CategoryColumns() {
     );
 }
 
-function getSortData(data) {
-    return data.reduce((result, item) => {
-        const date = item.created_at;
-        const category = item.category;
-        const sum = item.sum;
-
-        if (!result[date]) {
-            result[date] = {};
-        }
-
-        result[date][category] = (result[date][category] || 0) + sum;
-
-        return result;
-    }, {});
-}

@@ -1,27 +1,40 @@
 import {category} from "@/lib/supabase";
-import {getTotalSum} from "@/lib/BaseHelper";
-import React, {useState} from 'react';
+import {
+    getTotalSum,
+    getSortDataCat,
+    getSortDataDate,
+    getDatesInRange,
+    getTotalSumInCat,
+    getDataForChart
+} from "@/lib/BaseHelper";
+import React from 'react';
+import PieChartComp from "@/components/statistic/PieChart";
 
 export default function ExpenseTable({data}) {
     if (data.length > 0) {
+        const sortData = getSortDataCat(data);
         const totalSum  = getTotalSum(data);
-        const sortData = getSortData(data);
+        const sortedDates = getSortDataDate(sortData);
+        const totalSumInCats = getTotalSumInCat(sortData);
+        const chartData = getDataForChart(totalSum, totalSumInCats);
 
         return (
             <div>
                 <div className="alert alert-danger" role="alert">
                     Витрати <i>{totalSum}</i> UAH
                 </div>
+                <div className="d-flex justify-content-center">
+                    <PieChartComp data={chartData} />
+                </div>
                 <table className="table table-striped">
                     <thead>
                     <tr>
                         <th>Категорія</th>
                         <th>Сума</th>
-                        <th>Коментар</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <GetExpenseItems data={sortData}/>
+                    <GetExpenseItems data={sortedDates} sortData={sortData}/>
                     </tbody>
                 </table>
             </div>
@@ -35,43 +48,33 @@ export default function ExpenseTable({data}) {
     }
 }
 
-function GetExpenseItems({ data }) {
+function GetExpenseItems({ data, sortData }) {
     if (!data || typeof data !== 'object') {
         return null;
     }
 
     return (
         <>
-            {Object.keys(data).map((date) => (
-                <React.Fragment key={date}>
-                    <tr>
-                        <td colSpan="3">
-                            <b>{new Date(date).toLocaleDateString('uk-UA')}</b>
-                        </td>
-                    </tr>
-                    {data[date].map((item) => (
-                        <tr key={item.id}>
-                            <td>{category[item.category]}</td>
-                            <td>{item.sum}</td>
-                            <td>{item.comment}</td>
+            {
+                data.map(date => (
+                    <React.Fragment key={date}>
+                        <tr>
+                            <td colSpan="3">
+                                <b>{new Date(date).toLocaleDateString('uk-UA')}</b>
+                            </td>
                         </tr>
-                    ))}
-                </React.Fragment>
-            ))}
+                        {
+                            Object.entries(category).map(([code]) => (
+                                sortData[date][code] !== undefined
+                                    ? <tr key={code}>
+                                        <td>{category[code]}</td>
+                                        <td>{sortData[date][code]}</td>
+                                    </tr>
+                                    : ''
+                            ))
+                        }
+                    </React.Fragment>
+                ))}
         </>
     );
-}
-
-function getSortData(data) {
-    let result = {};
-
-    data.map((item) => {
-        if (result[item.created_at] === undefined) {
-            result[item.created_at] = [];
-        }
-
-        result[item.created_at].push(item);
-    });
-
-    return result;
 }

@@ -58,16 +58,32 @@ input.i-default {
 
 .value {
   display: inline-block;
-  width: 60px; /* Фіксована ширина для всіх значень */
+  width: 60px;
   text-align: right;
+  cursor: pointer;
 }
+
+.v-gold {
+  border-bottom: 1px solid #e3e375;
+}
+
+.v-normal {
+  border-bottom: 1px solid #65d5d5;
+}
+
+.v-many {
+  border-bottom: 1px solid #dd7979;
+}
+
+.v-light {
+  border-bottom: 1px solid lightgrey;
+}
+
 .zero-value {
   display: inline-block;
-  width: 60px; /* Така ж ширина, як у .value */
+  width: 60px;
   text-align: right;
-}
-.expense-border {
-  border-bottom: 1px solid lightgray;
+  cursor: pointer;
 }
 
 .category-column {
@@ -76,13 +92,16 @@ input.i-default {
 
 .scrollable-table {
   display: flex;
-  overflow-x: auto; /* Горизонтальна прокрутка */
-  white-space: nowrap; /* Запобігає перенесенню стовпців */
-  padding-bottom: 0.5rem; /* Відступ для смуги прокрутки */
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 0.5rem;
   box-sizing: border-box;
 }
 
-/* Стилі смуги прокрутки (WebKit) */
+.error-color {
+  color: #df5050;
+}
+
 .scrollable-table::-webkit-scrollbar {
   height: 8px;
 }
@@ -97,7 +116,6 @@ input.i-default {
   background: #555;
 }
 
-/* Стилі смуги прокрутки (Firefox) */
 .scrollable-table {
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;

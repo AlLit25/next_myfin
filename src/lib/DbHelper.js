@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import { DB, TABLE } from './supabase';
+import {redirect} from "next/navigation";
 
 function getAuthToken() {
     const authToken = Cookies.get('supabase-auth-token');
@@ -11,7 +12,6 @@ function getAuthToken() {
     return authToken;
 }
 
-// Перевірка автентифікації та оновлення сесії
 export async function checkAuth() {
     try {
         const authToken = getAuthToken();
@@ -22,10 +22,10 @@ export async function checkAuth() {
             sessionData = JSON.parse(authToken);
 
             if (!sessionData.access_token || !sessionData.refresh_token) {
-                return false;
+                redirect('/');
             }
         } catch (parseError) {
-            return false;
+            redirect('/');
         }
 
         const { data: { session }, error } = await DB.auth.setSession({
@@ -39,7 +39,7 @@ export async function checkAuth() {
             });
 
             if (refreshError) {
-                return false;
+                redirect('/');
             } else {
                 saveCookies(session);
             }
@@ -50,7 +50,7 @@ export async function checkAuth() {
         }
     } catch (err) {
         console.error('Помилка перевірки автентифікації:', err.message, err.line);
-        return false;
+        redirect('/');
     }
 }
 
@@ -83,19 +83,18 @@ export async function getStatistic(from, to) {
             .gte('created_at', from)
             .lte('created_at', to);
         if (error) {
-            result.error = `Помилка отримання даних із ${table}:`, error.message;
+            result.error = `Помилка отримання даних із ${TABLE.main}: `+error.message;
             return result;
         }
 
         result.data = data;
     } catch (err) {
-        result.error = 'Виняток у fetchData: ' + err.message;
+        result.error = 'Виняток у getStatistic: ' + err.message;
     }
 
     return result;
 }
 
-// Додавання даних до таблиці
 export async function insertData(date, sum, type, category, comment) {
     try {
         const isAuthenticated = await checkAuth();
@@ -125,6 +124,98 @@ export async function insertData(date, sum, type, category, comment) {
         console.error('Помилка запиту:', err.message);
         return false;
     }
+}
+
+export async function updateBalance(id, sum) {
+    try {
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            throw 'Користувач не авторизований';
+        }
+
+        const session = JSON.parse(getAuthToken());
+        const data = {
+            'uah': sum,
+            'user_id': session.user.id,
+            'last_check': new Date(),
+        }
+
+        const { error } = await DB.from(TABLE.balance)
+            .update(data)
+            .eq('id', id);
+
+        if (error) {
+            throw error;
+        }
+
+        return true;
+    } catch (err) {
+        console.error('Помилка запиту:', err.message);
+        return false;
+    }
+}
+
+export async function createBalance(sum) {
+    const result = { data: null, error: '' };
+
+    try {
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            result.error = 'Користувач не авторизований';
+            return result;
+        }
+        const session = JSON.parse(getAuthToken());
+        const data = {
+            uah: sum,
+            user_id: session.user.id,
+            last_check: new Date().toISOString(),
+            created_at: new Date().toISOString(),
+        };
+
+        const { data: createdData, error } = await DB.from(TABLE.balance)
+            .insert([data])
+            .select();
+
+        if (error) {
+            result.error = `Помилка створення в ${TABLE.balance}: ${error.message} (код: ${error.code || 'невідомий'})`;
+        }
+
+    } catch (err) {
+        result.error = 'Помилка запиту: '+err.message;
+    }
+
+    return result;
+}
+
+export async function getBalance() {
+    const result = { data: null, error: '' };
+
+    try {
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            result.error = 'Користувач не авторизований';
+            return result;
+        }
+
+        const session = JSON.parse(getAuthToken());
+        const { data, error } = await DB.from(TABLE.balance)
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single();
+        if (error) {
+            result.error = `Помилка отримання даних із ${TABLE.balance}: `+error.message;
+            return result;
+        }
+
+        result.data = data;
+    } catch (err) {
+        result.error = 'Виняток у getBalance: ' + err.message;
+    }
+
+    return result;
 }
 
 // Видалення даних із таблиці

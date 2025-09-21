@@ -35,17 +35,37 @@ export default function ExpenseAll({ data, dateStart, dateEnd }) {
 }
 
 function GetColumn({ date, items }) {
+    let sumDay = 0;
+    let sumDayClass = 'v-normal'
+
     return (
         <div className="">
             <div className="m-1">{new Date(date).toLocaleDateString('uk-UA')}</div>
             <div>
-                {Object.entries(category).map(([code]) => (
-                    <div key={code} className="expense-border">
-                        { items[code]
-                            ? <span className="value">{items[code]}</span>
+                {Object.entries(category).map(([code]) => {
+                    const sum = items[code] ? Number(items[code]) : 0;
+                    let classVal = 'v-normal';
+
+                    if (sum > 0) sumDay += sum;
+
+                    if (sum === 0) {classVal = 'v-gold';}
+                    else if (sum > 4000) {classVal = 'v-many';}
+
+                    if (sumDay === 0) {sumDayClass = 'v-gold';}
+                    else if (sumDay > 4000) {sumDayClass = 'v-many';}
+
+                    return (
+                    <div key={code} className={classVal}>
+                        { sum
+                            ? <span className="value">{sum}</span>
                             : <span className="zero-value"></span>}
                     </div>
-                ))}
+                )})}
+            </div>
+            <div className={sumDayClass}>
+            { sumDay
+                ? <span className="value"><b>{sumDay}</b></span>
+                : <span className="zero-value"></span>}
             </div>
         </div>
     );
@@ -56,8 +76,9 @@ function CategoryColumns() {
         <div className="category-column">
             <div className="m-1">Категорія/Дата</div>
             { Object.entries(category).map(([code, name]) => (
-                <div key={code} className="expense-border">{name}</div>
+                <div key={code} className="v-light">{name}</div>
             ))}
+            <div className="v-light">За день</div>
         </div>
     );
 }

@@ -55,6 +55,13 @@ input.i-default {
     transform: translateY(-100%);
   }
 }
+.colum-date {
+  cursor: pointer;
+}
+
+.category-column {
+  white-space: nowrap;
+}
 
 .value {
   display: inline-block;
@@ -63,7 +70,26 @@ input.i-default {
   cursor: pointer;
 }
 
+.zero-value {
+  display: inline-block;
+  width: 60px;
+  text-align: right;
+  cursor: pointer;
+}
+.colum-expense {
+  border: 1px solid transparent;
+}
+
+.colum-expense:hover {
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
 .v-gold {
+
   border-bottom: 1px solid #e3e375;
 }
 
@@ -77,17 +103,6 @@ input.i-default {
 
 .v-light {
   border-bottom: 1px solid lightgrey;
-}
-
-.zero-value {
-  display: inline-block;
-  width: 60px;
-  text-align: right;
-  cursor: pointer;
-}
-
-.category-column {
-  white-space: nowrap;
 }
 
 .scrollable-table {

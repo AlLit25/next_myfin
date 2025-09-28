@@ -7,6 +7,13 @@ export default function MainMenu() {
             <NavButton href={"/expense"} color={'primary'} text={'Витрати'}/>
             <NavButton href={"/statistic"} color={'primary'} text={'Статистика'}/>
             <NavButton href={"/balance"} color={'primary'} text={'Баланс'}/>
+
+            <div>
+                <ul>
+                    <li>Редагування доходу/витрати</li>
+                    <li>Відображення головної інформації на головному екрані</li>
+                </ul>
+            </div>
         </div>
     );
 }

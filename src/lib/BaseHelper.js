@@ -84,3 +84,15 @@ export function getDataForChart(totalSum, sumInCat) {
 export function getSortDataDate(data) {
     return Object.keys(data).sort((a, b) => new Date(a) - new Date(b));
 }
+
+export function getExpenseOfDay(data, currentDate) {
+    const dayExpense = [];
+
+    data.map((item) => {
+        if (item.created_at === currentDate) {
+            dayExpense.push(item);
+        }
+    });
+
+    return dayExpense;
+}

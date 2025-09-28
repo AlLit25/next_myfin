@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import { DB, TABLE } from './supabase';
-import {redirect} from "next/navigation";
 
 function getAuthToken() {
     const authToken = Cookies.get('supabase-auth-token');
@@ -22,10 +21,10 @@ export async function checkAuth() {
             sessionData = JSON.parse(authToken);
 
             if (!sessionData.access_token || !sessionData.refresh_token) {
-                redirect('/');
+                goToLogin();
             }
         } catch (parseError) {
-            redirect('/');
+            goToLogin();
         }
 
         const { data: { session }, error } = await DB.auth.setSession({
@@ -39,7 +38,7 @@ export async function checkAuth() {
             });
 
             if (refreshError) {
-                redirect('/');
+                goToLogin();
             } else {
                 saveCookies(session);
             }
@@ -50,7 +49,13 @@ export async function checkAuth() {
         }
     } catch (err) {
         console.error('Помилка перевірки автентифікації:', err.message, err.line);
-        redirect('/');
+        goToLogin();
+    }
+}
+
+function goToLogin() {
+    if (location.pathname !== '/') {
+        location.href = '/';
     }
 }
 
@@ -119,10 +124,22 @@ export async function insertData(date, sum, type, category, comment) {
             throw error;
         }
 
+        await syncBalance(sum, type);
+
         return true;
     } catch (err) {
         console.error('Помилка запиту:', err.message);
         return false;
+    }
+}
+
+async function syncBalance(sum, type) {
+    const balance = await getBalance();
+    let balanceSum = 0;
+
+    if (balance.data.id > 0) {
+        balanceSum = type === 'expense' ? balance.data.uah - Number(sum) : balance.data.uah + Number(sum);
+        await updateBalance(balance.data.id, balanceSum);
     }
 }
 

@@ -33,8 +33,6 @@ export default function Home() {
         initializeAuth();
     }, []);
 
-    // console.log('Рендеринг Home:', 'isLoading:', isLoading, 'isAuthenticated:', isAuthenticated);
-
     if (isLoading) {
         return (<Load />);
     }

@@ -101,6 +101,10 @@ div.custom-modal-overlay .custom-modal-btn:hover {
     background-color: #2d3748;
 }
 
+.i-w {
+    width: 100px;
+}
+
 img.edit-btn {
     cursor: pointer;
 }

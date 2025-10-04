@@ -20,32 +20,36 @@ export async function checkAuth() {
         try {
             sessionData = JSON.parse(authToken);
 
-            if (!sessionData.access_token || !sessionData.refresh_token) {
+            if (sessionData !== null) {
+                if (!sessionData.access_token || !sessionData.refresh_token) {
+                    goToLogin();
+                }
+
+                const { data: { session }, error } = await DB.auth.setSession({
+                    access_token: sessionData.access_token,
+                    refresh_token: sessionData.refresh_token,
+                });
+
+                if (error) {
+                    const { data: refreshData, error: refreshError } = await DB.auth.refreshSession({
+                        refresh_token: sessionData.refresh_token,
+                    });
+
+                    if (refreshError) {
+                        goToLogin();
+                    } else {
+                        saveCookies(session);
+                    }
+
+                    return refreshData.session;
+                } else {
+                    return session;
+                }
+            } else {
                 goToLogin();
             }
         } catch (parseError) {
             goToLogin();
-        }
-
-        const { data: { session }, error } = await DB.auth.setSession({
-            access_token: sessionData.access_token,
-            refresh_token: sessionData.refresh_token,
-        });
-
-        if (error) {
-            const { data: refreshData, error: refreshError } = await DB.auth.refreshSession({
-                refresh_token: sessionData.refresh_token,
-            });
-
-            if (refreshError) {
-                goToLogin();
-            } else {
-                saveCookies(session);
-            }
-
-            return refreshData.session;
-        } else {
-            return session;
         }
     } catch (err) {
         console.error('Помилка перевірки автентифікації:', err.message, err.line);
@@ -125,6 +129,35 @@ export async function insertData(date, sum, type, category, comment) {
         }
 
         await syncBalance(sum, type);
+
+        return true;
+    } catch (err) {
+        console.error('Помилка запиту:', err.message);
+        return false;
+    }
+}
+
+export async function editSum(id, sum) {
+    try {
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            throw 'Користувач не авторизований';
+        }
+
+        const session = JSON.parse(getAuthToken());
+        const data = {
+            'sum': sum,
+            'user_id': session.user.id,
+        }
+
+        const { error } = await DB.from(TABLE.main)
+            .update(data)
+            .eq('id', id);
+
+        if (error) {
+            throw error;
+        }
 
         return true;
     } catch (err) {

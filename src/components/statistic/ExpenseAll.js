@@ -11,7 +11,7 @@ import {
     getTotalSumInCat
 } from "@/lib/BaseHelper";
 import PieChartComp from '@/components/statistic/PieChart';
-import Modal from '@/components/Modal';
+import Modal from '@/components/statistic/Modal';
 
 export default function ExpenseAll({ data, dateStart, dateEnd }) {
     const sortData = getSortDataCat(data);
@@ -57,28 +57,9 @@ export default function ExpenseAll({ data, dateStart, dateEnd }) {
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                title={`Деталі витрат за ${selectedDate ? new Date(selectedDate).toLocaleDateString('uk-UA') : ''}`}
-            >
-                {selectedDate && selectedItems.length > 0 ? (
-                    <ul>
-                        {selectedItems.map(item => (
-                            <li key={item.id}>
-                                {item.sum} UAH - {category[item.category]}
-                                {item.comment
-                                    ? (<span>
-                                        {' (' + item.comment + ')'}
-                                    </span>)
-                                    : ''}
-                                <img src="/icons/delete.svg" alt="Видалити"
-                                     width="24" height="24" className="delete-btn"
-                                     style={{ marginLeft: '8px', verticalAlign: 'middle' }}/>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>Немає витрат за цей день.</p>
-                )}
-            </Modal>
+                selectedDate={selectedDate}
+                selectedItems={selectedItems}
+            />
         </div>
     );
 }

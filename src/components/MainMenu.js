@@ -7,7 +7,7 @@ export default function MainMenu() {
             <NavButton href={"/expense"} color={'primary'} text={'Витрати'}/>
             <NavButton href={"/statistic"} color={'primary'} text={'Звіт'}/>
             <NavButton href={"/balance"} color={'primary'} text={'Баланс'}/>
-
+            <NavButton href={"/main"} color={'secondary'} text={'(dev)'}/>
             <div>
                 <ul>
                     <li>Відображення головної інформації на головному екрані</li>

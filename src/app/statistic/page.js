@@ -69,10 +69,7 @@ export default function Statistic() {
 
     return (
         <div className="container mt-5">
-            <div className="text-center">
-                <h1>Статистика</h1>
-            </div>
-            <div className="d-block mb-3">
+            <div className="">
                 <NavButton href="/" color="secondary" text="На головну" />
             </div>
             <div className="row mt-3 mb-3">

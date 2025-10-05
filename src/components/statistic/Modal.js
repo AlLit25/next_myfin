@@ -30,7 +30,6 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
         }
     }, [isVisible, isOpen, onClose]);
 
-    // Ініціалізація editedItems при вході в режим редагування
     useEffect(() => {
         if (editBtnShow) {
             setEditedItems(selectedItems.map(item => ({ ...item })));
@@ -39,7 +38,7 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
 
     useEffect(() => {
         if (editBtnShow && selectedItems.length > 0) {
-            originalItemsRef.current = JSON.parse(JSON.stringify(selectedItems)); // Глибока копія оригіналу
+            originalItemsRef.current = JSON.parse(JSON.stringify(selectedItems));
             setEditedItems(selectedItems.map(item => ({ ...item })));
         }
     }, [editBtnShow, selectedItems]);

@@ -88,6 +88,10 @@ input.i-default {
   transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
+.td-w-250 {
+  width: 250px;
+}
+
 .v-gold {
 
   border-bottom: 1px solid #e3e375;

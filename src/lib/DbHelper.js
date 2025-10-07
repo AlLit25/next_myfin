@@ -60,9 +60,9 @@ export async function checkAuth() {
 function goToLogin() {
     const pathname = location.pathname;
     let homePath;
-
+    console.log(pathname);
     if (pathname.startsWith('/next_myfin')) {
-        homePath = '/next_myfin';
+        homePath = '/next_myfin/login';
     } else {
         homePath = '/';
     }

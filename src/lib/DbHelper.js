@@ -58,8 +58,17 @@ export async function checkAuth() {
 }
 
 function goToLogin() {
-    if (location.pathname !== '/') {
-        location.href = '/';
+    const pathname = location.pathname;
+    let homePath;
+
+    if (pathname.startsWith('/next_myfin')) {
+        homePath = '/next_myfin';
+    } else {
+        homePath = '/';
+    }
+
+    if (pathname !== homePath) {
+        location.href = homePath;
     }
 }
 

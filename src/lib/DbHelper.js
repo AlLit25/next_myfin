@@ -62,7 +62,7 @@ function goToLogin() {
     let homePath;
     console.log(pathname);
     if (pathname.startsWith('/next_myfin')) {
-        homePath = '/next_myfin/login';
+        homePath = '/next_myfin/';
     } else {
         homePath = '/';
     }

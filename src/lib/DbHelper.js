@@ -59,17 +59,24 @@ export async function checkAuth() {
 
 function goToLogin() {
     const pathname = location.pathname;
+    const homePath = getHomePath();
+
+    if (pathname !== homePath) {
+        location.href = homePath;
+    }
+}
+
+export function getHomePath() {
+    const pathname = location.pathname;
     let homePath;
-    console.log(pathname);
+
     if (pathname.startsWith('/next_myfin')) {
         homePath = '/next_myfin/';
     } else {
         homePath = '/';
     }
 
-    if (pathname !== homePath) {
-        location.href = homePath;
-    }
+    return homePath;
 }
 
 export function saveCookies(session) {
@@ -278,18 +285,16 @@ export async function getBalance() {
 }
 
 // Видалення даних із таблиці
-// export async function deleteData(table, id, setError) {
-//     try {
-//         const { error } = await DB.from(table).delete().eq('id', id);
-//         if (error) {
-//             console.error(`Помилка видалення з ${table}:`, error.message);
-//             setError(error.message);
-//             return false;
-//         }
-//         return true;
-//     } catch (err) {
-//         console.error('Помилка запиту:', err.message);
-//         setError('Помилка запиту: ' + err.message);
-//         return false;
-//     }
-// }
+export async function deleteData(id) {
+    try {
+        const { error } = await DB.from(TABLE.main).delete().eq('id', id);
+        if (error) {
+            console.error(`Помилка видалення з ${TABLE.main}:`, error.message);
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.error('Помилка запиту:', err.message);
+        return false;
+    }
+}

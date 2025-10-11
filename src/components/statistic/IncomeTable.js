@@ -1,8 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
 import {getTotalSum} from "@/lib/BaseHelper";
-import {editSum} from "@/lib/DbHelper";
+import {editSum, getHomePath} from "@/lib/DbHelper";
 
 export default function IncomeTable({data}) {
+    const baseLink = getHomePath();
     const [editBtnShow, setEditBtnShow] = useState(false);
     const [editedItems, setEditedItems] = useState(data);
     const originalItemsRef = useRef([]);
@@ -31,7 +32,7 @@ export default function IncomeTable({data}) {
             <div>
                 <div className="alert alert-success" role="alert">
                     Дохід <i>{totalSum}</i> UAH
-                    <img src="/icons/edit.svg" alt="Редагувати" width="24" height="24"
+                    <img src={baseLink+"icons/edit.svg"} alt="Редагувати" width="24" height="24"
                          className="edit-btn" onClick={editAction}
                          style={{ marginLeft: '8px', verticalAlign: 'middle' }}/>
                     <button className={`m-2 btn btn-success fade ${editBtnShow ? 'show' : ''}`}

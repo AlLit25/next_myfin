@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import '../../../public/style/Modal.css';
 import {category} from "@/lib/supabase";
 import {editSum} from "@/lib/DbHelper";
+import {getHomePath} from "@/lib/DbHelper";
 
 export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) {
+    const baseLink = getHomePath();
     const modalRef = useRef(null);
     const [isVisible, setIsVisible] = useState(false);
     const [editBtnShow, setEditBtnShow] = useState(false);
@@ -54,7 +56,7 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
                     <div className="custom-modal-header">
                         <h5 className="">
                             {`Деталі витрат за ${selectedDate ? new Date(selectedDate).toLocaleDateString('uk-UA') : ''}`}
-                            <img src="/icons/edit.svg" alt="Редагувати"
+                            <img src={baseLink+"icons/edit.svg"} alt="Редагувати"
                                  width="24" height="24" className="edit-btn" onClick={editAction}
                                  style={{ marginLeft: '8px', verticalAlign: 'middle' }}/>
                         </h5>
@@ -86,7 +88,7 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
                                     )}
                                     {editBtnShow && (
                                         <img
-                                            src="/icons/delete.svg"
+                                            src={baseLink+"icons/delete.svg"}
                                             alt="Видалити"
                                             width="24"
                                             height="24"
@@ -127,6 +129,7 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
     }
 
     function deleteItem(id) {
+
         setEditedItems(prev => prev.filter(item => item.id !== id));
     }
 

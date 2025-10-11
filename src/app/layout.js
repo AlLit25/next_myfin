@@ -1,12 +1,13 @@
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import getConfig from 'next/config';
 
 export const metadata = {
     title: "LiVi Analytics",
     description: "Додаток для фінансів",
     icons: {
-        icon: '/favicon.ico',
-        apple: '/apple-icon.png',
+        icon: getConfig.name['assetPrefix']+'favicon.ico',
+        apple: getConfig.name['assetPrefix']+'apple-icon.ico',
     },
 };
 

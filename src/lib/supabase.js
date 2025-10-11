@@ -8,6 +8,7 @@ export const TABLE = {
     "main": "fin_statistic",
     "balance": "fin_balance"
 }
+
 export const category = {
     "pr": "Продукти",
     "cf": "Кафе",
@@ -19,3 +20,5 @@ export const category = {
     "usd": "Валюта",
     "ot": "Інше",
 }
+
+export const link = '/next_myfin';

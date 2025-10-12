@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "Ваш повідомлення коміту"
+   git commit -m "add del expense data. fix bugs"
    ```
 
 5. Надішліть зміни до репозиторію:

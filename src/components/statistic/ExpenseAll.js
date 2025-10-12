@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {category} from "@/lib/supabase";
 import {
     getDataForChart,
@@ -23,6 +23,31 @@ export default function ExpenseAll({ data, dateStart, dateEnd }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedItems, setSelectedItems] = useState({});
+    const scrollRef = useRef(null);
+
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const todayDay = today.getDate();
+    let targetStr = todayStr;
+
+    if (todayDay > 10) {
+        const targetDate = new Date(today);
+        targetDate.setDate(targetDate.getDate() - 8);
+        targetStr = targetDate.toISOString().split('T')[0];
+    }
+
+    const targetIndex = allDates.findIndex(date => date === targetStr);
+
+    useEffect(() => {
+        if (scrollRef.current && targetIndex !== -1) {
+            const container = scrollRef.current;
+            const targetColumn = container.children[targetIndex];
+
+            if (targetColumn) {
+                container.scrollLeft = targetColumn.offsetLeft;
+            }
+        }
+    }, [targetIndex]);
 
     const openDetail = (date) => {
         const dayExpense = getExpenseOfDay(data, date);
@@ -32,7 +57,6 @@ export default function ExpenseAll({ data, dateStart, dateEnd }) {
         setIsModalOpen(true);
     };
 
-
     return (
         <div>
             <div className="alert alert-danger" role="alert">
@@ -40,7 +64,7 @@ export default function ExpenseAll({ data, dateStart, dateEnd }) {
             </div>
             <div className="d-flex mt-5">
                 <CategoryColumns />
-                <div className="d-flex scrollable-table">
+                <div ref={scrollRef} className="d-flex scrollable-table">
                     {allDates.map(date => (
                         <GetColumn
                             key={date}

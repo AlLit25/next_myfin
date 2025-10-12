@@ -284,17 +284,24 @@ export async function getBalance() {
     return result;
 }
 
-// Видалення даних із таблиці
 export async function deleteData(id) {
     try {
-        const { error } = await DB.from(TABLE.main).delete().eq('id', id);
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            throw new Error('Користувач не авторизований');
+        }
+
+        const session = JSON.parse(getAuthToken());
+        const { error } = await DB.from(TABLE.main).delete()
+            .eq('id', id).eq('user_id', session.user.id);
+
         if (error) {
-            console.error(`Помилка видалення з ${TABLE.main}:`, error.message);
             return false;
         }
+
         return true;
     } catch (err) {
-        console.error('Помилка запиту:', err.message);
         return false;
     }
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../../../public/style/Modal.css';
 import {category} from "@/lib/supabase";
-import {editSum} from "@/lib/DbHelper";
+import {deleteData, editSum} from "@/lib/DbHelper";
 import {getHomePath} from "@/lib/DbHelper";
 
 export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) {
@@ -9,6 +9,7 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
     const modalRef = useRef(null);
     const [isVisible, setIsVisible] = useState(false);
     const [editBtnShow, setEditBtnShow] = useState(false);
+    const [delElem, setDelElem] = useState(false);
     const [editedItems, setEditedItems] = useState([]);
     const originalItemsRef = useRef([]);
 
@@ -61,7 +62,7 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
                                  style={{ marginLeft: '8px', verticalAlign: 'middle' }}/>
                         </h5>
                         <button className="custom-modal-close-btn" aria-label="Close"
-                                onClick={() => setIsVisible(false)}>
+                                onClick={closeModal}>
                             <svg width="24" height="24" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round"
@@ -116,9 +117,21 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
         </div>
     );
 
+    function closeModal() {
+        setIsVisible(false);
+        setEditBtnShow(false);
+
+        if (delElem) {
+            location.reload();
+        }
+    }
+
     function editAction() {
         const state = !editBtnShow;
         setEditBtnShow(state);
+        if (delElem) {
+            location.reload();
+        }
     }
 
     function updateSum(id, newSum) {
@@ -129,8 +142,10 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
     }
 
     function deleteItem(id) {
-
-        setEditedItems(prev => prev.filter(item => item.id !== id));
+        deleteData(id).then(() => {
+            setEditedItems(prev => prev.filter(item => item.id !== id));
+            setDelElem(true);
+        });
     }
 
     async function handleSave() {
@@ -168,7 +183,11 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
             } catch (error) {
                 console.error('Помилка під час оновлення даних:', error);
             }
-        } else {
+        }
+        else if (delElem) {
+            location.reload();
+        }
+        else {
             setEditBtnShow(false);
             setIsVisible(false);
         }

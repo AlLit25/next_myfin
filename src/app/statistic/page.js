@@ -49,7 +49,6 @@ export default function Statistic() {
         }
     };
 
-    // Завантаження даних при першому рендері
     useEffect(() => {
         fetchData(dateRange.from, dateRange.to);
     }, []);

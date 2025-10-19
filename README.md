@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "add income to new main page"
+   git commit -m "add mobile template"
    ```
 
 5. Надішліть зміни до репозиторію:

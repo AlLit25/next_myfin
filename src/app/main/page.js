@@ -5,10 +5,9 @@ import Desktop from "@/components/main/Desktop";
 
 export default function MainPage() {
 
-    return (<div>
-        <div className="text-center">
-            <h1>LiVi Analytic</h1>
+    return (
+        <div>
+            { !isMobile ? <Mobile /> : <Desktop /> }
         </div>
-        { isMobile ? <Mobile /> : <Desktop /> }
-    </div>);
+    );
 }

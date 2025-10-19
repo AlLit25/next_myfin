@@ -1,15 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { DB } from '../lib/supabase';
+import { DB } from '@/lib/supabase';
 import Cookies from 'js-cookie';
+import { isMobile } from 'react-device-detect';
 
 export default function LoginForm () {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(null);
-    const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,10 +26,10 @@ export default function LoginForm () {
             }
 
             Cookies.set('supabase-auth-token', JSON.stringify(data.session), {
-                expires: 1, // Cookie дійсне 1 день
-                path: '/', // Доступне на всьому сайті
-                secure: process.env.NODE_ENV === 'production', // Безпечне тільки в продакшені (HTTPS)
-                sameSite: 'Strict', // Захист від CSRF
+                expires: 1,
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'Strict',
             });
 
             location.reload();
@@ -44,7 +43,7 @@ export default function LoginForm () {
             <form onSubmit={handleSubmit}>
                 {error && <div className="alert alert-danger">{error}</div>}
                 <div className="d-flex justify-content-center m-4">
-                    <div className="w-50">
+                    <div className={isMobile ? "w-100" : "w-50"}>
                         <label className="form-label">Email</label>
                         <input
                             className="form-control form-control-lg"
@@ -57,7 +56,7 @@ export default function LoginForm () {
                     </div>
                 </div>
                 <div className="d-flex justify-content-center m-4">
-                    <div className="w-50">
+                    <div className={isMobile ? "w-100" : "w-50"}>
                         <label className="form-label">Пароль</label>
                         <input
                             className="form-control form-control-lg"

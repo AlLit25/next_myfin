@@ -1,6 +1,7 @@
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import getConfig from 'next/config';
+import Head from "next/head";
 
 export const metadata = {
     title: "LiVi Analytics",
@@ -12,11 +13,20 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="en">
-      <body className="container">
-        {children}
-      </body>
-    </html>
-  );
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(getConfig.name['assetPrefix']+'sw.js');
+    }
+
+    return (
+        <html lang="en">
+            <Head>
+                <link rel="manifest" href={ getConfig.name['assetPrefix']+"/manifest.json"} />
+                <meta name="theme-color" content="#000000" />
+                <link rel="apple-touch-icon" href={getConfig.name['assetPrefix']+"/logo.png"} />
+            </Head>
+            <body className="container">
+                {children}
+            </body>
+        </html>
+    );
 }

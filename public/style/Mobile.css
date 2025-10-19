@@ -13,7 +13,16 @@
 
 .slide {
     flex: 0 0 50%;
-    padding: 10px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+/* Якщо .d-block-desk не має width: 100%, додайте: */
+.d-block-desk {
+    width: 100%;
 }
 
 .dots {

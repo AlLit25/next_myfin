@@ -7,7 +7,7 @@ export default function MainPage() {
 
     return (
         <div>
-            { !isMobile ? <Mobile /> : <Desktop /> }
+            { isMobile ? <Mobile /> : <Desktop /> }
         </div>
     );
 }

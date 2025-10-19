@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "add mobile template"
+   git commit -m "add slider. add adaptive. fix bugs"
    ```
 
 5. Надішліть зміни до репозиторію:

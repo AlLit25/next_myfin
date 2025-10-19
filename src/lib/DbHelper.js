@@ -69,7 +69,8 @@ function goToLogin() {
 export function getHomePath() {
     const pathname = location.pathname;
     let homePath;
-
+    console.log(pathname);
+    console.log(pathname.startsWith('/next_myfin'));
     if (pathname.startsWith('/next_myfin')) {
         homePath = '/next_myfin/';
     } else {

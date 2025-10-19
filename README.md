@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "fix orientation"
+   git commit -m "fix bug with links"
    ```
 
 5. Надішліть зміни до репозиторію:

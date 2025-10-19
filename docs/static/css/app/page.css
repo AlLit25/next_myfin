@@ -1,0 +1,66 @@
+/*!**********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./public/style/Desctop.css ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************/
+.d-block-desk {
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.d-block-desk:hover {
+    border-color: rgba(119, 136, 153, 0.9);
+    transform: scale(1.02);
+}
+
+/*!*********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./public/style/Mobile.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************/
+.slider-container {
+    overflow: hidden;
+    position: relative;
+    touch-action: pan-y; /* Дозволяє вертикальний скрол, блокує горизонтальний для свайпу */
+    -webkit-user-select: none;
+       -moz-user-select: none;
+            user-select: none; /* Запобігає виділення тексту під час свайпу */
+}
+
+.slider-track {
+    width: 200%;
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+}
+
+.slide {
+    flex: 0 0 50%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+/* Якщо .d-block-desk не має width: 100%, додайте: */
+.d-block-desk {
+    width: 100%;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dot.active {
+    background-color: #000;
+}

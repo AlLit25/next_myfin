@@ -96,3 +96,10 @@ export function getExpenseOfDay(data, currentDate) {
 
     return dayExpense;
 }
+
+export function refreshStatisticOnMainPage() {
+    const btnRefreshStatistic = document.querySelector('button[data-refresh="statistic"]');
+    if (btnRefreshStatistic !== undefined) {
+        btnRefreshStatistic.click();
+    }
+}

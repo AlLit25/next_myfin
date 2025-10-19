@@ -27,8 +27,6 @@ export default function StatisticMainPage() {
                     }
                 });
                 setData(sortData);
-                console.log(data);
-                console.log(sortData);
             }
             setIsLoading(false);
         } catch (err) {
@@ -37,8 +35,13 @@ export default function StatisticMainPage() {
     };
 
     useEffect(() => {
-        fetchData(dateRange.from, dateRange.to);
+        refreshData();
     }, []);
+
+    function refreshData() {
+        setIsLoading(true);
+        fetchData(dateRange.from, dateRange.to);
+    }
 
     return (
         <div>
@@ -47,8 +50,15 @@ export default function StatisticMainPage() {
                 : (
                     <>
                         <div className="row">
-                            <h3 className="col-8">{formatDateForShow(new Date(), 'full')}</h3>
-                            <a className="col-4 text-end" href="/statistic">Детально</a>
+                            <div className="col-6">
+                                <h3>{formatDateForShow(new Date(), 'full')}</h3>
+                            </div>
+                            <div className="col-6 text-end">
+                                <button className="btn btn-link" onClick={refreshData} data-refresh="statistic">
+                                    Оновити
+                                </button>
+                                <a className="btn btn-link" href="/statistic">Детально</a>
+                            </div>
                         </div>
                         <div>
                             Дохід: {data['income'].length > 0

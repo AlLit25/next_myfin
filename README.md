@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "dev main page for desktop"
+   git commit -m "add income to new main page"
    ```
 
 5. Надішліть зміни до репозиторію:

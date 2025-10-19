@@ -5,6 +5,7 @@ import { checkAuth, removeCookies } from '@/lib/DbHelper';
 import LoginForm from '@/components/LoginForm';
 import MainMenu from '@/components/MainMenu';
 import Load from "@/components/Load";
+import MainPage from "@/app/main/page";
 
 export default function Home() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,7 +43,7 @@ export default function Home() {
             <div className="m-5 text-center">
                 <p className="h1">LiVi Analytics</p>
             </div>
-            {isAuthenticated ? <MainMenu /> : <LoginForm />}
+            {isAuthenticated ? <MainPage /> : <LoginForm />}
         </div>
     );
 }

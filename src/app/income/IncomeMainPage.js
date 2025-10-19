@@ -5,11 +5,10 @@ import {useState} from "react";
 import {insertData} from "@/lib/DbHelper";
 import {getCurrentDay} from "@/lib/DateHelper";
 import Notify from "@/components/Notify";
+import {refreshStatisticOnMainPage} from "@/lib/BaseHelper";
 
-export default function IncomeMainPage() {
+export default function IncomeMainPage({setTextNotify, setShowNotify}) {
     const [incomeSum, setIncomeSum] = useState('');
-    const [showNotify, setShowNotify] = useState(false);
-    const [textNotify, setTextNotify] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     function addIncome() {
@@ -27,6 +26,7 @@ export default function IncomeMainPage() {
                 }
 
                 setIsLoading(false);
+                refreshStatisticOnMainPage();
             });
         } else {
             setShowNotify(true);
@@ -41,21 +41,18 @@ export default function IncomeMainPage() {
                 ? (<Load header={false} />)
                 : (<>
                     <div className="row">
-                        <Notify show={showNotify} text={textNotify} setShowDefault={setShowNotify} />
-                        <div className="mt-3 text-center">
-                            <h1>Додати дохід</h1>
-                        </div>
-                        <div className="d-flex justify-content-center mt-3">
+                        <div className="col-8">
                             <input type="number"
-                                   className="i-default form-control"
+                                   className="form-control"
                                    value={incomeSum}
+                                   placeholder="сума доходу"
                                    onChange={(e) => setIncomeSum(e.target.value)}
                                    min="0"
                             />
                         </div>
-                        <div className="d-flex justify-content-center mt-3">
-                            <button type="button" className="btn btn-success b-default"
-                                    onClick={addIncome}>Додати</button>
+                        <div className="col-4">
+                            <button type="button" className="btn btn-success"
+                                    onClick={addIncome}>Додати дохід</button>
                         </div>
                     </div>
                 </>)}

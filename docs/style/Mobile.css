@@ -1,0 +1,37 @@
+.slider-container {
+    overflow: hidden;
+    position: relative;
+    touch-action: pan-y; /* Дозволяє вертикальний скрол, блокує горизонтальний для свайпу */
+    user-select: none; /* Запобігає виділення тексту під час свайпу */
+}
+
+.slider-track {
+    width: 200%;
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+}
+
+.slide {
+    flex: 0 0 50%;
+    padding: 10px;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dot.active {
+    background-color: #000;
+}

@@ -1,0 +1,11 @@
+.d-block-desk {
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.d-block-desk:hover {
+    border-color: rgba(119, 136, 153, 0.9);
+    transform: scale(1.02);
+}

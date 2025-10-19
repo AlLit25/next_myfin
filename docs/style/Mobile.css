@@ -1,0 +1,46 @@
+.slider-container {
+    overflow: hidden;
+    position: relative;
+    touch-action: pan-y; /* Дозволяє вертикальний скрол, блокує горизонтальний для свайпу */
+    user-select: none; /* Запобігає виділення тексту під час свайпу */
+}
+
+.slider-track {
+    width: 200%;
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+}
+
+.slide {
+    flex: 0 0 50%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+/* Якщо .d-block-desk не має width: 100%, додайте: */
+.d-block-desk {
+    width: 100%;
+}
+
+.dots {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dot.active {
+    background-color: #000;
+}

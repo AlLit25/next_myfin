@@ -35,8 +35,10 @@ export default function Balance() {
     }
 
     getBalance().then(elem => {
-        setCurBalance(elem.data.uah || 0)
-        setIdBalance(elem.data.id || 0)
+        if (elem.data !== null) {
+            setCurBalance(elem.data.uah || 0)
+            setIdBalance(elem.data.id || 0)
+        }
         setIsLoading(false);
     });
 

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { checkAuth, removeCookies } from '@/lib/DbHelper';
 import LoginForm from '@/components/LoginForm';
-import MainMenu from '@/components/MainMenu';
 import Load from "@/components/Load";
 import MainPage from "@/app/main/page";
 

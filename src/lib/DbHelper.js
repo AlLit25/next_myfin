@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import { DB, TABLE } from './supabase';
+import { useRouter } from 'next/router';
 
 function getAuthToken() {
     const authToken = Cookies.get('supabase-auth-token');
@@ -11,18 +12,23 @@ function getAuthToken() {
     return authToken;
 }
 
-export async function checkAuth() {
+export async function checkAuth(pathname = null) { // pathname з роутера або пропсів
     try {
         const authToken = getAuthToken();
 
         let sessionData;
 
         try {
+            if (authToken === null) {
+                return null;
+            }
+
             sessionData = JSON.parse(authToken);
 
             if (sessionData !== null) {
                 if (!sessionData.access_token || !sessionData.refresh_token) {
-                    goToLogin();
+                    await goToLogin(pathname);
+                    return null;
                 }
 
                 const { data: { session }, error } = await DB.auth.setSession({
@@ -36,42 +42,50 @@ export async function checkAuth() {
                     });
 
                     if (refreshError) {
-                        goToLogin();
+                        return null;
                     } else {
-                        saveCookies(session);
+                        saveCookies(refreshData.session); // припускаю, що saveCookies існує
+                        return refreshData.session;
                     }
-
-                    return refreshData.session;
                 } else {
                     return session;
                 }
             } else {
-                goToLogin();
+                return null;
             }
         } catch (parseError) {
-            goToLogin();
+            return null;
         }
     } catch (err) {
-        console.error('Помилка перевірки автентифікації:', err.message, err.line);
-        goToLogin();
+        console.error('Помилка перевірки автентифікації:', err.message, err.stack);
+        return null;
     }
 }
 
-function goToLogin() {
-    const pathname = location.pathname;
-    const homePath = getHomePath();
+// Асинхронна функція редіректу (використовує роутер; викликається тільки на клієнті)
+// export async function goToLogin(pathname = null) {
+//     if (typeof window === 'undefined') {
+//         return;
+//     }
+//
+//     const router = useRouter(); // це хук, тож функцію викликайте в компоненті або передавайте роутер як параметр
+//     // Альтернатива: передайте роутер як параметр: goToLogin(pathname, router)
+//
+//     const currentPathname = pathname || window.location.pathname;
+//     const homePath = getHomePath(currentPathname); // передаємо pathname
+//
+//     if (currentPathname !== homePath) {
+//         await router.push(homePath); // асинхронний push для кращого UX
+//     }
+// }
 
-    if (pathname !== homePath) {
-        location.href = homePath;
-    }
-}
+// Функція для шляху домашньої сторінки (тепер приймає pathname як параметр)
+export function getHomePath(pathname = null) {
+    const currentPathname = pathname || (typeof window !== 'undefined' ? window.location.pathname : '/');
 
-export function getHomePath() {
-    const pathname = location.pathname;
     let homePath;
-    console.log(pathname);
-    console.log(pathname.startsWith('/next_myfin'));
-    if (pathname.startsWith('/next_myfin')) {
+
+    if (currentPathname.startsWith('/next_myfin')) {
         homePath = '/next_myfin/';
     } else {
         homePath = '/';

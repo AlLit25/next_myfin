@@ -2,7 +2,7 @@
 
 import {useEffect, useState} from "react";
 import {formatDateForShow, getCurrentDay} from "@/lib/DateHelper";
-import {getStatistic, removeCookies} from "@/lib/DbHelper";
+import {getHomePath, getStatistic, removeCookies} from "@/lib/DbHelper";
 import Load from "@/components/Load";
 import {category} from "@/lib/supabase";
 
@@ -10,6 +10,7 @@ export default function StatisticMainPage() {
     const [data, setData] = useState({ income: [], expense: [] });
     const dateRange = getCurrentDay();
     const [isLoading, setIsLoading] = useState(true);
+    const homePath = getHomePath();
 
     const fetchData = async (from, to) => {
         try {
@@ -57,7 +58,7 @@ export default function StatisticMainPage() {
                                 <button className="btn btn-link" onClick={refreshData} data-refresh="statistic">
                                     Оновити
                                 </button>
-                                <a className="btn btn-link" href="/statistic">Детально</a>
+                                <a className="btn btn-link" href={homePath+"statistic"}>Детально</a>
                             </div>
                         </div>
                         <div>

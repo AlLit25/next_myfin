@@ -1,8 +1,8 @@
 "use client";
 
 import Load from "@/components/Load";
-import {useState} from "react";
-import {insertData} from "@/lib/DbHelper";
+import React, {useState} from "react";
+import {getHomePath, insertData} from "@/lib/DbHelper";
 import {getCurrentDay} from "@/lib/DateHelper";
 import Notify from "@/components/Notify";
 import {refreshStatisticOnMainPage} from "@/lib/BaseHelper";
@@ -10,6 +10,7 @@ import {refreshStatisticOnMainPage} from "@/lib/BaseHelper";
 export default function IncomeMainPage({setTextNotify, setShowNotify}) {
     const [incomeSum, setIncomeSum] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const homePath = getHomePath();
 
     function addIncome() {
         setIsLoading(true);
@@ -50,9 +51,17 @@ export default function IncomeMainPage({setTextNotify, setShowNotify}) {
                                    min="0"
                             />
                         </div>
-                        <div className="col-4">
+                        <div className="col-4 text-end">
                             <button type="button" className="btn btn-success"
                                     onClick={addIncome}>Додати дохід</button>
+                            <a href={homePath + 'income'} className="next-btn-inline">
+                                <svg className="feather feather-chevron-right"
+                                     fill="none" height="24"
+                                     stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                                     strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                                    <polyline points="9 18 15 12 9 6"/>
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </>)}

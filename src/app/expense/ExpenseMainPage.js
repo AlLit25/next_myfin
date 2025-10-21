@@ -2,8 +2,8 @@
 
 import {category} from "@/lib/supabase";
 import Load from "@/components/Load";
-import {useState} from "react";
-import {insertData} from "@/lib/DbHelper";
+import React, {useState} from "react";
+import {getHomePath, insertData} from "@/lib/DbHelper";
 import {getCurrentDay} from "@/lib/DateHelper";
 import {refreshStatisticOnMainPage} from "@/lib/BaseHelper";
 
@@ -12,6 +12,7 @@ export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
     const [expenseCat, setExpenseCat] = useState('');
     const [expenseSum, setExpenseSum] = useState('');
     const [expenseComment, setExpenseComment] = useState('');
+    const homePath = getHomePath();
 
     function addExpense() {
         setIsLoading(true);
@@ -71,10 +72,18 @@ export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
                               value={expenseComment}></textarea>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
-                    <button type="button" className="btn btn-success b-default"
+                    <button type="button" className="btn btn-success"
                             onClick={addExpense}>
                         Додати витрату
                     </button>
+                    <a href={homePath + 'expense'} className="next-btn-inline p-2">
+                        <svg className="feather feather-chevron-right"
+                             fill="none" height="24"
+                             stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                             strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </a>
                 </div>
             </>)}
         </div>

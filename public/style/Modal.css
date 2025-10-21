@@ -105,26 +105,22 @@ div.custom-modal-overlay .custom-modal-btn:hover {
     width: 100px;
 }
 
-img.edit-btn {
+.edit-btn {
     cursor: pointer;
-}
-img.edit-btn:hover {
-    background-color: #ffdbc4;
-    border-radius: 5px;
+    color: #999;
+    transition: color 0.2s ease;
 }
 
-img.delete-btn {
-    cursor: pointer;
-}
-img.delete-btn:hover {
-    background-color: #ff9393;
-    border-radius: 15px;
+.edit-btn:hover {
+    color: #ffc094;
 }
 
-/* Адаптивність */
-@media (max-width: 576px) {
-    div.custom-modal-overlay .custom-modal {
-        width: 95%;
-        max-width: 95%;
-    }
+.delete-btn {
+    cursor: pointer;
+    color: #999;
+    transition: color 0.2s ease;
+}
+
+.delete-btn:hover {
+    color: #ff9393;
 }

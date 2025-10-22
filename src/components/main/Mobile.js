@@ -8,6 +8,7 @@ import IncomeMainPage from "@/app/income/IncomeMainPage";
 import ExpenseMainPage from "@/app/expense/ExpenseMainPage";
 import Notify from "@/components/Notify";
 import { useState, useRef } from "react";
+import {getCurrentDay} from "@/lib/DateHelper";
 
 export default function Mobile() {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -18,6 +19,7 @@ export default function Mobile() {
     const startX = useRef(0);
     const currentX = useRef(0);
     const isDragging = useRef(false);
+    const [dateInfo, setDateInfo] = useState(getCurrentDay());
 
     const totalSlides = 2;
 
@@ -91,7 +93,15 @@ export default function Mobile() {
                             </div>
                         </div>
                         <div className="slide p-3">
-                            <div className="d-block-desk" style={{ width: '100%' }}>
+                            <div className="d-block-desk">
+                                <input type="date"
+                                       className="form-control"
+                                       data-date="mainPage"
+                                       value={dateInfo.from}
+                                       onChange={(e) =>
+                                           setDateInfo({ ...dateInfo, from: e.target.value })}/>
+                            </div>
+                            <div className="d-block-desk mt-3" style={{ width: '100%' }}>
                                 <IncomeMainPage setTextNotify={setTextNotify} setShowNotify={setShowNotify} />
                             </div>
                             <div className="d-block-desk mt-3" style={{ width: '100%' }}>

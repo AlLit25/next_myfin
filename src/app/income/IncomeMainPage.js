@@ -5,7 +5,8 @@ import React, {useState} from "react";
 import {getHomePath, insertData} from "@/lib/DbHelper";
 import {getCurrentDay} from "@/lib/DateHelper";
 import Notify from "@/components/Notify";
-import {refreshStatisticOnMainPage} from "@/lib/BaseHelper";
+import {getDateFromMainPage, refreshDataOnMainPage, refreshStatisticOnMainPage} from "@/lib/BaseHelper";
+import Link from "next/link";
 
 export default function IncomeMainPage({setTextNotify, setShowNotify}) {
     const [incomeSum, setIncomeSum] = useState('');
@@ -15,8 +16,15 @@ export default function IncomeMainPage({setTextNotify, setShowNotify}) {
     function addIncome() {
         setIsLoading(true);
         if (Number(incomeSum) > 0) {
-            const dateInfo = getCurrentDay();
-            insertData(dateInfo.from, incomeSum, 'income', '', '').then(res => {
+            const dateInfo = getDateFromMainPage();
+
+            if (dateInfo === null) {
+                setShowNotify(true);
+                setTextNotify('Необхідно обрати дату');
+                setIsLoading(false);
+            }
+
+            insertData(dateInfo, incomeSum, 'income', '', '').then(res => {
                 setShowNotify(true);
 
                 if (res) {
@@ -27,7 +35,7 @@ export default function IncomeMainPage({setTextNotify, setShowNotify}) {
                 }
 
                 setIsLoading(false);
-                refreshStatisticOnMainPage();
+                refreshDataOnMainPage();
             });
         } else {
             setShowNotify(true);
@@ -42,7 +50,7 @@ export default function IncomeMainPage({setTextNotify, setShowNotify}) {
                 ? (<Load header={false} />)
                 : (<>
                     <div className="row">
-                        <div className="col-8">
+                        <div className="col-md-7 mb-2 col-sm-12">
                             <input type="number"
                                    className="form-control"
                                    value={incomeSum}
@@ -51,17 +59,17 @@ export default function IncomeMainPage({setTextNotify, setShowNotify}) {
                                    min="0"
                             />
                         </div>
-                        <div className="col-4 text-end">
+                        <div className="col-md-5 col-sm-12 text-center">
                             <button type="button" className="btn btn-success"
                                     onClick={addIncome}>Додати дохід</button>
-                            <a href={homePath + 'income'} className="next-btn-inline">
+                            <Link href={`${homePath}income`} className="next-btn-inline">
                                 <svg className="feather feather-chevron-right"
                                      fill="none" height="24"
                                      stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
                                      strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                                     <polyline points="9 18 15 12 9 6"/>
                                 </svg>
-                            </a>
+                            </Link>
                         </div>
                     </div>
                 </>)}

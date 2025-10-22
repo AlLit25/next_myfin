@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { checkAuth, removeCookies } from '@/lib/DbHelper';
 import LoginForm from '@/components/LoginForm';
 import Load from "@/components/Load";
-import MainPage from "@/app/main/page";
+import MainMenu from "@/components/MainMenu";
 
 export default function Home() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,7 +42,7 @@ export default function Home() {
             <div className="m-5 text-center">
                 <p className="h1">LiVi Analytics</p>
             </div>
-            {isAuthenticated ? <MainPage /> : <LoginForm />}
+            {isAuthenticated ? <MainMenu /> : <LoginForm />}
         </div>
     );
 }

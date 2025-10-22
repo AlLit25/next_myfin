@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "fix bug with links 3"
+   git commit -m "chenge icons svg"
    ```
 
 5. Надішліть зміни до репозиторію:

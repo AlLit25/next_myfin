@@ -97,8 +97,24 @@ export function getExpenseOfDay(data, currentDate) {
     return dayExpense;
 }
 
-export function refreshStatisticOnMainPage() {
-    const btnRefreshStatistic = document.querySelector('button[data-refresh="statistic"]');
+export function getDateFromMainPage() {
+    const dateMainPage = document.querySelector('input[data-date="mainPage"]');
+
+    if (dateMainPage !== undefined) {
+        return dateMainPage.value;
+    }
+
+    return null;
+}
+
+export function refreshDataOnMainPage() {
+    const btnRefreshBalance = document.querySelector('span[data-refresh="balance"]');
+    const btnRefreshStatistic = document.querySelector('span[data-refresh="statistic"]');
+
+    if (btnRefreshBalance !== undefined) {
+        btnRefreshBalance.click();
+    }
+
     if (btnRefreshStatistic !== undefined) {
         btnRefreshStatistic.click();
     }

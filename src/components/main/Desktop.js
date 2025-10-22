@@ -7,10 +7,12 @@ import IncomeMainPage from "@/app/income/IncomeMainPage";
 import ExpenseMainPage from "@/app/expense/ExpenseMainPage";
 import Notify from "@/components/Notify";
 import {useState} from "react";
+import {getCurrentDay} from "@/lib/DateHelper";
 
 export default function Desktop() {
     const [showNotify, setShowNotify] = useState(false);
     const [textNotify, setTextNotify] = useState('');
+    const [dateInfo, setDateInfo] = useState(getCurrentDay());
 
     return (
         <div className="row">
@@ -24,6 +26,14 @@ export default function Desktop() {
                 </div>
             </div>
             <div className="col-6">
+                <div className="d-block-desk">
+                    <input type="date"
+                           className="form-control"
+                           data-date="mainPage"
+                           value={dateInfo.from}
+                           onChange={(e) =>
+                               setDateInfo({ ...dateInfo, from: e.target.value })}/>
+                </div>
                 <div className="d-block-desk mt-2">
                     <IncomeMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
                 </div>

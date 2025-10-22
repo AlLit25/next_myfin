@@ -72,7 +72,7 @@ export default function Statistic() {
                 <NavButton href="/" color="secondary" text="На головну" />
             </div>
             <div className="row mt-3 mb-3">
-                <div className="col-4">
+                <div className="col-md-4 col-sm-12 mt-2 text-center">
                     <input type="date"
                            className="form-control"
                            value={dateRange.from}
@@ -80,7 +80,7 @@ export default function Statistic() {
                            onChange={(e) =>
                                setDateRange({ ...dateRange, from: e.target.value })}/>
                 </div>
-                <div className="col-4">
+                <div className="col-md-4 col-sm-12 mt-2 text-center">
                     <input type="date"
                            className="form-control"
                            data-date-to=""
@@ -88,7 +88,7 @@ export default function Statistic() {
                            onChange={(e) =>
                                setDateRange({ ...dateRange, to: e.target.value })}/>
                 </div>
-                <div className="col-4">
+                <div className="col-md-4 col-sm-12 mt-2 text-center">
                     <button type="button"
                             className="btn btn-success"
                             onClick={showData}>

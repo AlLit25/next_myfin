@@ -5,7 +5,8 @@ import Load from "@/components/Load";
 import React, {useState} from "react";
 import {getHomePath, insertData} from "@/lib/DbHelper";
 import {getCurrentDay} from "@/lib/DateHelper";
-import {refreshStatisticOnMainPage} from "@/lib/BaseHelper";
+import {refreshDataOnMainPage, refreshStatisticOnMainPage} from "@/lib/BaseHelper";
+import Link from "next/link";
 
 export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
     const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +32,7 @@ export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
                 }
 
                 setIsLoading(false);
-                refreshStatisticOnMainPage();
+                refreshDataOnMainPage();
             });
         } else {
             setShowNotify(true);
@@ -58,7 +59,7 @@ export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
                     <select className="form-control s-default"
                             value={expenseCat}
                             onChange={(e) => setExpenseCat(e.target.value)}>
-                        <option key={''} value={''}>Обрати</option>
+                        <option key="" value="">Обрати</option>
                         {Object.entries(category).map(([code, label]) => (
                             <option key={code} value={code}>
                                 {label}
@@ -76,14 +77,14 @@ export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
                             onClick={addExpense}>
                         Додати витрату
                     </button>
-                    <a href={homePath + 'expense'} className="next-btn-inline p-2">
+                    <Link href={`${homePath}expense`} className="next-btn-inline p-2">
                         <svg className="feather feather-chevron-right"
                              fill="none" height="24"
                              stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
                              strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
                             <polyline points="9 18 15 12 9 6"/>
                         </svg>
-                    </a>
+                    </Link>
                 </div>
             </>)}
         </div>

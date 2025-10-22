@@ -1,30 +1,17 @@
 import {category} from "@/lib/supabase";
-import {
-    getTotalSum,
-    getSortDataCat,
-    getSortDataDate,
-    getDatesInRange,
-    getTotalSumInCat,
-    getDataForChart
-} from "@/lib/BaseHelper";
+import {getTotalSum, getSortDataCat, getSortDataDate} from "@/lib/BaseHelper";
 import React from 'react';
-import PieChartComp from "@/components/statistic/PieChart";
 
 export default function ExpenseTable({data}) {
     if (data.length > 0) {
         const sortData = getSortDataCat(data);
         const totalSum  = getTotalSum(data);
         const sortedDates = getSortDataDate(sortData);
-        const totalSumInCats = getTotalSumInCat(sortData);
-        const chartData = getDataForChart(totalSum, totalSumInCats);
 
         return (
             <div>
                 <div className="alert alert-danger" role="alert">
                     Витрати <i>{totalSum}</i> UAH
-                </div>
-                <div className="d-flex justify-content-center">
-                    <PieChartComp data={chartData} />
                 </div>
                 <table className="table table-striped">
                     <thead>

@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "drop pages income, expense"
+   git commit -m "fix links 2"
    ```
 
 5. Надішліть зміни до репозиторію:

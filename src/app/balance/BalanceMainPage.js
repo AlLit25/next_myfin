@@ -1,7 +1,7 @@
 "use client";
 
 import React, {useEffect, useState} from "react";
-import {getBalance, getHomePath} from "@/lib/DbHelper";
+import {getBalance} from "@/lib/DbHelper";
 import Load from "@/components/Load";
 import Link from "next/link";
 

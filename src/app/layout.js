@@ -1,6 +1,5 @@
 import "./globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import getConfig from 'next/config';
 import Head from "next/head";
 
 export const metadata = {

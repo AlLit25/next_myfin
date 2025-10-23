@@ -12,6 +12,8 @@ export default function StatisticMainPage() {
     const dateRange = getCurrentDay();
     const [isLoading, setIsLoading] = useState(true);
     const homePath = getHomePath();
+    let totalIncome = 0;
+    let totalExpense = 0;
 
     const fetchData = async (from, to) => {
         try {
@@ -83,17 +85,28 @@ export default function StatisticMainPage() {
                         </div>
                         <div>
                             Дохід: {data['income'].length > 0
-                            ? (<ul>{data['income'].map(elem => (<li key={elem.id}>{elem.sum} UAH</li>))}</ul>)
+                            ? (<ul>{data['income'].map(elem => {
+                                totalIncome += elem.sum;
+                                return (<li key={elem.id}>{elem.sum} UAH</li>)
+                            })} {data['income'].length > 1
+                                ? (<li><b>Загалом:</b> {totalIncome} UAH</li>)
+                                : ''}
+                            </ul>)
                             : 'відсутній'}
                         </div>
                         <div>
                             Витрати: {data['expense'].length > 0
                             ? (<ul>
-                                {data['expense'].map(elem => (
-                                <li key={elem.id}>
-                                    {elem.sum} UAH ({category[elem.category]})
-                                </li>
-                                ))}
+                                {data['expense'].map(elem => {
+                                    totalExpense += elem.sum;
+                                    return (<li key={elem.id}>
+                                            {elem.sum} UAH ({category[elem.category]})
+                                        </li>
+                                    )
+                                })}
+                                {data['expense'].length > 0
+                                    ? (<li><b>Загалом:</b> {totalExpense} UAH</li>)
+                                    : ''}
                             </ul>)
                             : 'відсутні'}
                         </div>

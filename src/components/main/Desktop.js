@@ -1,6 +1,6 @@
 'use client';
 
-import '../../../public/style/Desctop.css';
+import '../../../public/style/Desktop.css';
 import BalanceMainPage from "@/app/balance/BalanceMainPage";
 import StatisticMainPage from "@/app/statistic/StatisticMainPage";
 import IncomeMainPage from "@/app/income/IncomeMainPage";
@@ -26,9 +26,9 @@ export default function Desktop() {
                 </div>
             </div>
             <div className="col-6">
-                <div className="d-block-desk">
+                <div className="d-block-desk d-flex justify-content-center">
                     <input type="date"
-                           className="form-control"
+                           className="form-control i-default"
                            data-date="mainPage"
                            value={dateInfo.from}
                            onChange={(e) =>

@@ -50,26 +50,18 @@ export default function IncomeMainPage({setTextNotify, setShowNotify}) {
                 ? (<Load header={false} />)
                 : (<>
                     <div className="row">
-                        <div className="col-md-7 mb-2 col-sm-12">
+                        <div className="mb-2 col-sm-12 d-flex justify-content-center">
                             <input type="number"
-                                   className="form-control"
+                                   className="form-control i-default"
                                    value={incomeSum}
                                    placeholder="сума доходу"
                                    onChange={(e) => setIncomeSum(e.target.value)}
                                    min="0"
                             />
                         </div>
-                        <div className="col-md-5 col-sm-12 text-center">
+                        <div className="col-sm-12 text-center">
                             <button type="button" className="btn btn-success"
                                     onClick={addIncome}>Додати дохід</button>
-                            <Link href={`${homePath}income`} className="next-btn-inline">
-                                <svg className="feather feather-chevron-right"
-                                     fill="none" height="24"
-                                     stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
-                                     strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                                    <polyline points="9 18 15 12 9 6"/>
-                                </svg>
-                            </Link>
                         </div>
                     </div>
                 </>)}

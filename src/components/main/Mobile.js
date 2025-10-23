@@ -1,6 +1,6 @@
 'use client';
 
-import '../../../public/style/Desctop.css';
+import '../../../public/style/Desktop.css';
 import '../../../public/style/Mobile.css';
 import BalanceMainPage from "@/app/balance/BalanceMainPage";
 import StatisticMainPage from "@/app/statistic/StatisticMainPage";

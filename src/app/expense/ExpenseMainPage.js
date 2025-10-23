@@ -5,7 +5,7 @@ import Load from "@/components/Load";
 import React, {useState} from "react";
 import {getHomePath, insertData} from "@/lib/DbHelper";
 import {getCurrentDay} from "@/lib/DateHelper";
-import {refreshDataOnMainPage, refreshStatisticOnMainPage} from "@/lib/BaseHelper";
+import {refreshDataOnMainPage} from "@/lib/BaseHelper";
 import Link from "next/link";
 
 export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
@@ -77,14 +77,6 @@ export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
                             onClick={addExpense}>
                         Додати витрату
                     </button>
-                    <Link href={`${homePath}expense`} className="next-btn-inline p-2">
-                        <svg className="feather feather-chevron-right"
-                             fill="none" height="24"
-                             stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
-                             strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                            <polyline points="9 18 15 12 9 6"/>
-                        </svg>
-                    </Link>
                 </div>
             </>)}
         </div>

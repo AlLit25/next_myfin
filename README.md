@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "fix links 2"
+   git commit -m "fix links 3"
    ```
 
 5. Надішліть зміни до репозиторію:

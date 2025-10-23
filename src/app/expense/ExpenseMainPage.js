@@ -3,17 +3,15 @@
 import {category} from "@/lib/supabase";
 import Load from "@/components/Load";
 import React, {useState} from "react";
-import {getHomePath, insertData} from "@/lib/DbHelper";
+import {insertData} from "@/lib/DbHelper";
 import {getCurrentDay} from "@/lib/DateHelper";
 import {refreshDataOnMainPage} from "@/lib/BaseHelper";
-import Link from "next/link";
 
 export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
     const [isLoading, setIsLoading] = useState(false);
     const [expenseCat, setExpenseCat] = useState('');
     const [expenseSum, setExpenseSum] = useState('');
     const [expenseComment, setExpenseComment] = useState('');
-    const homePath = getHomePath();
 
     function addExpense() {
         setIsLoading(true);

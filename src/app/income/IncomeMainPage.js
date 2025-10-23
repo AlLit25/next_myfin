@@ -2,16 +2,12 @@
 
 import Load from "@/components/Load";
 import React, {useState} from "react";
-import {getHomePath, insertData} from "@/lib/DbHelper";
-import {getCurrentDay} from "@/lib/DateHelper";
-import Notify from "@/components/Notify";
-import {getDateFromMainPage, refreshDataOnMainPage, refreshStatisticOnMainPage} from "@/lib/BaseHelper";
-import Link from "next/link";
+import {insertData} from "@/lib/DbHelper";
+import {getDateFromMainPage, refreshDataOnMainPage} from "@/lib/BaseHelper";
 
 export default function IncomeMainPage({setTextNotify, setShowNotify}) {
     const [incomeSum, setIncomeSum] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const homePath = getHomePath();
 
     function addIncome() {
         setIsLoading(true);

@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "change image. add SelectDate component"
+   git commit -m "change image."
    ```
 
 5. Надішліть зміни до репозиторію:

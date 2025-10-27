@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "change image."
+   git commit -m "change image latest"
    ```
 
 5. Надішліть зміни до репозиторію:

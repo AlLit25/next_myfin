@@ -1,0 +1,138 @@
+'use client';
+
+import React, {useEffect, useRef, useState} from 'react';
+import {category} from "@/lib/supabase";
+import {
+    getDataForChart,
+    getDatesInRange,
+    getExpenseOfDay,
+    getSortDataCat,
+    getTotalSum,
+    getTotalSumInCat
+} from "@/lib/BaseHelper";
+import Modal from '@/components/statistic/Modal';
+
+export default function StatAll({ data, dateStart, dateEnd }) {
+    const sortData = getSortDataCat(data);
+    const totalSum = getTotalSum(data);
+    const allDates = getDatesInRange(dateStart, dateEnd);
+    const totalSumInCats = getTotalSumInCat(sortData);
+    const chartData = getDataForChart(totalSum, totalSumInCats);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedItems, setSelectedItems] = useState({});
+    const scrollRef = useRef(null);
+
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    const todayDay = today.getDate();
+    let targetStr = todayStr;
+
+    if (todayDay > 10) {
+        const targetDate = new Date(today);
+        targetDate.setDate(targetDate.getDate() - 8);
+        targetStr = targetDate.toISOString().split('T')[0];
+    }
+
+    const targetIndex = allDates.findIndex(date => date === targetStr);
+
+    useEffect(() => {
+        if (scrollRef.current && targetIndex !== -1) {
+            const container = scrollRef.current;
+            const targetColumn = container.children[targetIndex];
+
+            if (targetColumn) {
+                container.scrollLeft = targetColumn.offsetLeft;
+            }
+        }
+    }, [targetIndex]);
+
+    const openDetail = (date) => {
+        const dayExpense = getExpenseOfDay(data, date);
+
+        setSelectedDate(date);
+        setSelectedItems(dayExpense || []);
+        setIsModalOpen(true);
+    };
+
+    return (
+        <div>
+            <div className="alert alert-danger" role="alert">
+                Витрати <i>{totalSum}</i> UAH
+            </div>
+            <div className="d-flex mt-5">
+                <CategoryColumns />
+                <div ref={scrollRef} className="d-flex scrollable-table">
+                    {allDates.map(date => (
+                        <GetColumn
+                            key={date}
+                            date={date}
+                            items={sortData[date] || {}}
+                            openDetail={openDetail}
+                        />
+                    ))}
+                </div>
+            </div>
+            <Modal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                selectedDate={selectedDate}
+                selectedItems={selectedItems}
+            />
+        </div>
+    );
+}
+
+function GetColumn({ date, items, openDetail }) {
+    let sumDay = 0;
+
+    return (
+        <div className="colum-expense">
+            <div className="m-1 colum-date" onClick={() => openDetail(date)}>
+                {new Date(date).toLocaleDateString('uk-UA')}
+            </div>
+            <div>0</div>
+            <div>0</div>
+            <div>
+                {Object.entries(category).map(([code]) => {
+                    const sum = items[code] ? Number(items[code]) : 0;
+                    if (sum > 0) sumDay += sum;
+
+                    return (
+                        <div key={code} className="v-light v-border">
+                            {sum ? (
+                                <span className="value" onClick={() => openDetail(date)}>{sum}</span>
+                            ) : (
+                                <span className="zero-value"></span>
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
+            <div className="">
+                {sumDay ? (
+                    <span className="value"><b>{sumDay}</b></span>
+                ) : (
+                    <span className="zero-value"></span>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function CategoryColumns() {
+    return (
+        <div className="category-column">
+            <div className="m-1">Дата</div>
+            <div className="m-1">Дохід</div>
+            <div className="m-1">Витрати</div>
+            {Object.entries(category).map(([code, name]) => (
+                <div key={code} className="v-light v-border">{name}</div>
+            ))}
+            <div className="">Всього</div>
+        </div>
+    );
+}
+
+

@@ -8,31 +8,43 @@ import ExpenseMainPage from "@/app/expense/ExpenseMainPage";
 import Notify from "@/components/Notify";
 import {useState} from "react";
 import SelectDate from "@/components/main/SelectDate";
+import StatisticTable from "@/app/statistic/StatisticTable";
 
 export default function Desktop() {
     const [showNotify, setShowNotify] = useState(false);
     const [textNotify, setTextNotify] = useState('');
 
     return (
-        <div className="row">
-            <Notify show={showNotify} text={textNotify} setShowDefault={setShowNotify} />
-            <div className="col-6">
-                <div className="d-block-desk">
-                    <BalanceMainPage />
+        <div>
+            <div className="row">
+                <Notify show={showNotify} text={textNotify} setShowDefault={setShowNotify} />
+                <div className="col-6">
+                    <div className="d-block-desk-no-hover">
+                        <BalanceMainPage />
+                        <StatisticMainPage />
+                    </div>
                 </div>
-                <div className="d-block-desk mt-2">
-                    <StatisticMainPage />
+                <div className="col-6">
+                    <div className="d-block-desk-no-hover mt-2">
+                        <div className="d-flex justify-content-center m-2">
+                            <SelectDate />
+                        </div>
+
+                        <div className="d-flex justify-content-center m-2">
+                            <span>Дохід</span>
+                        </div>
+                        <IncomeMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
+
+                        <div className="d-flex justify-content-center m-2">
+                            <span>Витрати</span>
+                        </div>
+                        <ExpenseMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
+                    </div>
                 </div>
             </div>
-            <div className="col-6">
-                <div className="d-block-desk d-flex justify-content-center">
-                    <SelectDate />
-                </div>
-                <div className="d-block-desk mt-2">
-                    <IncomeMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
-                </div>
-                <div className="d-block-desk mt-2">
-                    <ExpenseMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
+            <div className="row">
+                <div className="d-block-desk-no-hover mt-2">
+                    <StatisticTable />
                 </div>
             </div>
         </div>

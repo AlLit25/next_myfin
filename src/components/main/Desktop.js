@@ -15,8 +15,8 @@ export default function Desktop() {
     const [textNotify, setTextNotify] = useState('');
 
     return (
-        <div>
-            <div className="row">
+        <div className="container-fluid">
+            <div className="row mb-4">
                 <Notify show={showNotify} text={textNotify} setShowDefault={setShowNotify} />
                 <div className="col-6">
                     <div className="d-block-desk-no-hover">
@@ -25,25 +25,25 @@ export default function Desktop() {
                     </div>
                 </div>
                 <div className="col-6">
-                    <div className="d-block-desk-no-hover mt-2">
-                        <div className="d-flex justify-content-center m-2">
+                    <div className="d-block-desk-no-hover">
+                        <div className="d-flex justify-content-center">
                             <SelectDate />
                         </div>
 
-                        <div className="d-flex justify-content-center m-2">
+                        <div className="d-flex justify-content-center">
                             <span>Дохід</span>
                         </div>
                         <IncomeMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
 
-                        <div className="d-flex justify-content-center m-2">
+                        <div className="d-flex justify-content-center">
                             <span>Витрати</span>
                         </div>
                         <ExpenseMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
                     </div>
                 </div>
             </div>
-            <div className="row">
-                <div className="d-block-desk-no-hover mt-2">
+            <div className="row m-1">
+                <div className="d-block-desk-no-hover">
                     <StatisticTable />
                 </div>
             </div>

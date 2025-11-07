@@ -60,8 +60,8 @@ export default function StatisticTable() {
     };
 
     return (
-        <div className="container mt-5">
-            <div className="row mt-3 mb-3">
+        <div className="container">
+            <div className="row m-3">
                 <div className="col-md-4 col-sm-12 mt-2 text-center">
                     <input type="date"
                            className="form-control"
@@ -94,7 +94,7 @@ export default function StatisticTable() {
                 ) : isLoading
                     ?  <Load header={false} />
                     : <div>
-                        <StatAll data={data.expense} dateStart={dateRange.from} dateEnd={dateRange.to} />
+                        <StatAll data={data} dateStart={dateRange.from} dateEnd={dateRange.to} />
                     </div>}
             </div>
         </div>

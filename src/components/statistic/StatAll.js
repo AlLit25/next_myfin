@@ -5,16 +5,17 @@ import {category} from "@/lib/supabase";
 import {
     getDataForChart,
     getDatesInRange,
-    getExpenseOfDay,
+    getExpenseOfDay, getIncomeSumOfDay,
     getSortDataCat,
     getTotalSum,
     getTotalSumInCat
 } from "@/lib/BaseHelper";
 import Modal from '@/components/statistic/Modal';
+import {formatDateForShow} from "@/lib/DateHelper";
 
 export default function StatAll({ data, dateStart, dateEnd }) {
-    const sortData = getSortDataCat(data);
-    const totalSum = getTotalSum(data);
+    const sortData = getSortDataCat(data.expense);
+    const totalSum = getTotalSum(data.expense);
     const allDates = getDatesInRange(dateStart, dateEnd);
     const totalSumInCats = getTotalSumInCat(sortData);
     const chartData = getDataForChart(totalSum, totalSumInCats);
@@ -33,23 +34,23 @@ export default function StatAll({ data, dateStart, dateEnd }) {
         const targetDate = new Date(today);
         targetDate.setDate(targetDate.getDate() - 8);
         targetStr = targetDate.toISOString().split('T')[0];
+
+        const targetIndex = allDates.findIndex(date => date === targetStr);
+
+        useEffect(() => {
+            if (scrollRef.current && targetIndex !== -1) {
+                const container = scrollRef.current;
+                const targetColumn = container.children[targetIndex];
+
+                if (targetColumn) {
+                    container.scrollLeft = targetColumn.offsetLeft;
+                }
+            }
+        }, [targetIndex]);
     }
 
-    const targetIndex = allDates.findIndex(date => date === targetStr);
-
-    useEffect(() => {
-        if (scrollRef.current && targetIndex !== -1) {
-            const container = scrollRef.current;
-            const targetColumn = container.children[targetIndex];
-
-            if (targetColumn) {
-                container.scrollLeft = targetColumn.offsetLeft;
-            }
-        }
-    }, [targetIndex]);
-
     const openDetail = (date) => {
-        const dayExpense = getExpenseOfDay(data, date);
+        const dayExpense = getExpenseOfDay(data.expense, date);
 
         setSelectedDate(date);
         setSelectedItems(dayExpense || []);
@@ -58,9 +59,9 @@ export default function StatAll({ data, dateStart, dateEnd }) {
 
     return (
         <div>
-            <div className="alert alert-danger" role="alert">
-                Витрати <i>{totalSum}</i> UAH
-            </div>
+            {/*<div className="alert alert-danger" role="alert">*/}
+            {/*    Витрати <i>{totalSum}</i> UAH*/}
+            {/*</div>*/}
             <div className="d-flex mt-5">
                 <CategoryColumns />
                 <div ref={scrollRef} className="d-flex scrollable-table">
@@ -69,6 +70,7 @@ export default function StatAll({ data, dateStart, dateEnd }) {
                             key={date}
                             date={date}
                             items={sortData[date] || {}}
+                            income={data.income}
                             openDetail={openDetail}
                         />
                     ))}
@@ -84,33 +86,41 @@ export default function StatAll({ data, dateStart, dateEnd }) {
     );
 }
 
-function GetColumn({ date, items, openDetail }) {
+function GetColumn({ date, items, income, openDetail }) {
     let sumDay = 0;
+    const sumIncome = getIncomeSumOfDay(income, date);
+    const dateObj = new Date(date);
 
     return (
         <div className="colum-expense">
-            <div className="m-1 colum-date" onClick={() => openDetail(date)}>
-                {new Date(date).toLocaleDateString('uk-UA')}
+            <div className="colum-date" onClick={() => openDetail(date)}>
+                {dateObj.toLocaleDateString('uk-UA')}
+                ({formatDateForShow(dateObj, 'nameDay')})
             </div>
-            <div>0</div>
-            <div>0</div>
-            <div>
-                {Object.entries(category).map(([code]) => {
-                    const sum = items[code] ? Number(items[code]) : 0;
-                    if (sum > 0) sumDay += sum;
+            <div className="v-light v-border text-center">
+                {sumIncome > 0
+                    ? <span className="value">{sumIncome}</span>
+                    : <span className="zero-value"></span>
+                }
+            </div>
+            <div className="v-border">
+                <span className="zero-value"></span>
+            </div>
+            {Object.entries(category).map(([code]) => {
+                const sum = items[code] ? Number(items[code]) : 0;
+                if (sum > 0) sumDay += sum;
 
-                    return (
-                        <div key={code} className="v-light v-border">
-                            {sum ? (
-                                <span className="value" onClick={() => openDetail(date)}>{sum}</span>
-                            ) : (
-                                <span className="zero-value"></span>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-            <div className="">
+                return (
+                    <div key={code} className="v-light v-border text-center">
+                        {sum ? (
+                            <span className="value" onClick={() => openDetail(date)}>{sum}</span>
+                        ) : (
+                            <span className="zero-value"></span>
+                        )}
+                    </div>
+                );
+            })}
+            <div className="text-center">
                 {sumDay ? (
                     <span className="value"><b>{sumDay}</b></span>
                 ) : (
@@ -124,9 +134,9 @@ function GetColumn({ date, items, openDetail }) {
 function CategoryColumns() {
     return (
         <div className="category-column">
-            <div className="m-1">Дата</div>
-            <div className="m-1">Дохід</div>
-            <div className="m-1">Витрати</div>
+            <div className="v-light v-border">Дата</div>
+            <div className="v-light v-border">Дохід</div>
+            <div className="v-light v-border">Витрати</div>
             {Object.entries(category).map(([code, name]) => (
                 <div key={code} className="v-light v-border">{name}</div>
             ))}

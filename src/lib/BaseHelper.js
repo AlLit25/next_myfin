@@ -96,6 +96,17 @@ export function getExpenseOfDay(data, currentDate) {
 
     return dayExpense;
 }
+export function getIncomeSumOfDay(data, currentDate) {
+    let daySum = 0;
+
+    data.map((item) => {
+        if (item.created_at === currentDate) {
+            daySum += item.sum;
+        }
+    });
+
+    return daySum;
+}
 
 export function getDateFromMainPage() {
     const dateMainPage = document.querySelector('input[data-date="mainPage"]');

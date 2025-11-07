@@ -64,19 +64,16 @@ input.i-default {
 }
 
 .value {
-  display: inline-block;
-  width: 60px;
-  text-align: right;
   cursor: pointer;
 }
 
 .zero-value {
   display: inline-block;
   width: 60px;
-  text-align: right;
   cursor: pointer;
 }
 .colum-expense {
+  min-width: 115px;
   border: 1px solid transparent;
 }
 
@@ -93,7 +90,6 @@ input.i-default {
 }
 
 .v-gold {
-
   border-bottom: 1px solid #e3e375;
 }
 

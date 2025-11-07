@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "change favicon 1"
+   git commit -m "dev StatAll comp"
    ```
 
 5. Надішліть зміни до репозиторію:

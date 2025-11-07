@@ -38,12 +38,11 @@ export function formatDateForShow(date, dayFormat = 'none') {
     const fullDays = ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота'];
     const shortDays = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
 
-    let dayPart = '';
     if (dayFormat === 'short') {
-        dayPart = shortDays[dayOfWeek] + ', ';
+        return shortDays[dayOfWeek] + ', ' + `${day}.${month}.${year}`;
     } else if (dayFormat === 'full') {
-        dayPart = fullDays[dayOfWeek] + ', ';
+        return fullDays[dayOfWeek] + ', ' + `${day}.${month}.${year}`;
+    } else if (dayFormat === 'nameDay') {
+        return shortDays[dayOfWeek];
     }
-
-    return dayPart + `${day}.${month}.${year}`;
 }

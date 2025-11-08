@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "dev StatAll comp"
+   git commit -m "add functions to DbHelper"
    ```
 
 5. Надішліть зміни до репозиторію:

@@ -96,7 +96,8 @@ export function getExpenseOfDay(data, currentDate) {
 
     return dayExpense;
 }
-export function getIncomeSumOfDay(data, currentDate) {
+
+export function getSumOfDay(data, currentDate) {
     let daySum = 0;
 
     data.map((item) => {

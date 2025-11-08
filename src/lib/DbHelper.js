@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import { DB, TABLE } from './supabase';
-import { useRouter } from 'next/router';
 
 function getAuthToken() {
     const authToken = Cookies.get('supabase-auth-token');
@@ -12,7 +11,7 @@ function getAuthToken() {
     return authToken;
 }
 
-export async function checkAuth(pathname = null) { // pathname з роутера або пропсів
+export async function checkAuth(pathname = null) {
     try {
         const authToken = getAuthToken();
 
@@ -27,7 +26,6 @@ export async function checkAuth(pathname = null) { // pathname з роутера
 
             if (sessionData !== null) {
                 if (!sessionData.access_token || !sessionData.refresh_token) {
-                    await goToLogin(pathname);
                     return null;
                 }
 
@@ -62,24 +60,6 @@ export async function checkAuth(pathname = null) { // pathname з роутера
     }
 }
 
-// Асинхронна функція редіректу (використовує роутер; викликається тільки на клієнті)
-// export async function goToLogin(pathname = null) {
-//     if (typeof window === 'undefined') {
-//         return;
-//     }
-//
-//     const router = useRouter(); // це хук, тож функцію викликайте в компоненті або передавайте роутер як параметр
-//     // Альтернатива: передайте роутер як параметр: goToLogin(pathname, router)
-//
-//     const currentPathname = pathname || window.location.pathname;
-//     const homePath = getHomePath(currentPathname); // передаємо pathname
-//
-//     if (currentPathname !== homePath) {
-//         await router.push(homePath); // асинхронний push для кращого UX
-//     }
-// }
-
-// Функція для шляху домашньої сторінки (тепер приймає pathname як параметр)
 export function getHomePath(pathname = null) {
     const currentPathname = pathname || (typeof window !== 'undefined' ? window.location.pathname : '/');
 
@@ -197,6 +177,29 @@ export async function editSum(id, sum) {
     }
 }
 
+
+export async function deleteData(id) {
+    try {
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            throw new Error('Користувач не авторизований');
+        }
+
+        const session = JSON.parse(getAuthToken());
+        const { error } = await DB.from(TABLE.main).delete()
+            .eq('id', id).eq('user_id', session.user.id);
+
+        if (error) {
+            return false;
+        }
+
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
 async function syncBalance(sum, type) {
     const balance = await getBalance();
     let balanceSum = 0;
@@ -218,8 +221,7 @@ export async function updateBalance(id, sum) {
         const session = JSON.parse(getAuthToken());
         const data = {
             'uah': sum,
-            'user_id': session.user.id,
-            'last_check': new Date(),
+            'user_id': session.user.id
         }
 
         const { error } = await DB.from(TABLE.balance)
@@ -237,7 +239,7 @@ export async function updateBalance(id, sum) {
     }
 }
 
-export async function createBalance(sum) {
+export async function createFinBalance(sum, type) {
     const result = { data: null, error: '' };
 
     try {
@@ -251,7 +253,7 @@ export async function createBalance(sum) {
         const data = {
             uah: sum,
             user_id: session.user.id,
-            last_check: new Date().toISOString(),
+            type: type,
             created_at: new Date().toISOString(),
         };
 
@@ -285,6 +287,7 @@ export async function getBalance() {
         const { data, error } = await DB.from(TABLE.balance)
             .select('*')
             .eq('user_id', session.user.id)
+            .eq('type', 'current')
             .single();
         if (error) {
             result.error = `Помилка отримання даних із ${TABLE.balance}: `+error.message;
@@ -299,24 +302,32 @@ export async function getBalance() {
     return result;
 }
 
-export async function deleteData(id) {
+export async function getStatisticsBalance() {
+    const result = { data: null, error: '' };
+
     try {
         const isAuthenticated = await checkAuth();
 
         if (!isAuthenticated) {
-            throw new Error('Користувач не авторизований');
+            result.error = 'Користувач не авторизований';
+            return result;
         }
 
         const session = JSON.parse(getAuthToken());
-        const { error } = await DB.from(TABLE.main).delete()
-            .eq('id', id).eq('user_id', session.user.id);
-
+        const { data, error } = await DB.from(TABLE.balance)
+            .select('*')
+            .eq('user_id', session.user.id)
+            .eq('type', 'statistics');
         if (error) {
-            return false;
+            result.error = `Помилка отримання даних із ${TABLE.balance}: `+error.message;
+            return result;
         }
 
-        return true;
+        result.data = data;
     } catch (err) {
-        return false;
+        result.error = 'Виняток у getBalance: ' + err.message;
     }
+
+    return result;
 }
+

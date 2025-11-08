@@ -48,7 +48,6 @@ export default function StatisticTable() {
         fetchData(dateRange.from, dateRange.to);
     }, []);
 
-    // Обробник кліку на кнопку "Відобразити"
     const showData = () => {
         const fromInput = document.querySelector('input[data-date-from]').value;
         const toInput = document.querySelector('input[data-date-to]').value;
@@ -61,7 +60,7 @@ export default function StatisticTable() {
 
     return (
         <div className="container">
-            <div className="row m-3">
+            <div className="row">
                 <div className="col-md-4 col-sm-12 mt-2 text-center">
                     <input type="date"
                            className="form-control"
@@ -78,7 +77,7 @@ export default function StatisticTable() {
                            onChange={(e) =>
                                setDateRange({ ...dateRange, to: e.target.value })}/>
                 </div>
-                <div className="col-md-4 col-sm-12 mt-2 text-center">
+                <div className="col-md-4 col-sm-12 mt-2 text-end">
                     <button type="button"
                             className="btn btn-success"
                             onClick={showData}>

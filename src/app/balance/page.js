@@ -2,7 +2,7 @@
 
 import NavButton from "@/components/NavButton";
 import {useState} from "react";
-import {getBalance, updateBalance} from "@/lib/DbHelper";
+import {getBalance, getStatisticsBalance, updateBalance} from "@/lib/DbHelper";
 import Load from "@/components/Load";
 import Notify from "@/components/Notify";
 
@@ -61,6 +61,10 @@ export default function Balance() {
             });
         }
     }
+
+    getStatisticsBalance().then(data => {
+        console.log(data);
+    });
 
     return (
         isLoading

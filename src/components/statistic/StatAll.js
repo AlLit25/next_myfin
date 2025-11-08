@@ -6,7 +6,7 @@ import {
     getDataForChart,
     getDatesInRange,
     getExpenseOfDay, getIncomeSumOfDay,
-    getSortDataCat,
+    getSortDataCat, getSumOfDay,
     getTotalSum,
     getTotalSumInCat
 } from "@/lib/BaseHelper";
@@ -70,7 +70,7 @@ export default function StatAll({ data, dateStart, dateEnd }) {
                             key={date}
                             date={date}
                             items={sortData[date] || {}}
-                            income={data.income}
+                            originalData={data}
                             openDetail={openDetail}
                         />
                     ))}
@@ -86,11 +86,11 @@ export default function StatAll({ data, dateStart, dateEnd }) {
     );
 }
 
-function GetColumn({ date, items, income, openDetail }) {
-    let sumDay = 0;
-    const sumIncome = getIncomeSumOfDay(income, date);
+function GetColumn({ date, items, originalData, openDetail }) {
+    const sumIncome = getSumOfDay(originalData.income, date);
+    const sumExpense = getSumOfDay(originalData.expense, date);
     const dateObj = new Date(date);
-
+    // console.log(items);
     return (
         <div className="colum-expense">
             <div className="colum-date" onClick={() => openDetail(date)}>
@@ -99,34 +99,26 @@ function GetColumn({ date, items, income, openDetail }) {
             </div>
             <div className="v-light v-border text-center">
                 {sumIncome > 0
-                    ? <span className="value">{sumIncome}</span>
+                    ? <span className="value"><b>{sumIncome}</b></span>
                     : <span className="zero-value"></span>
                 }
             </div>
-            <div className="v-border">
-                <span className="zero-value"></span>
-            </div>
-            {Object.entries(category).map(([code]) => {
-                const sum = items[code] ? Number(items[code]) : 0;
-                if (sum > 0) sumDay += sum;
-
-                return (
-                    <div key={code} className="v-light v-border text-center">
-                        {sum ? (
-                            <span className="value" onClick={() => openDetail(date)}>{sum}</span>
-                        ) : (
-                            <span className="zero-value"></span>
-                        )}
-                    </div>
-                );
-            })}
-            <div className="text-center">
-                {sumDay ? (
-                    <span className="value"><b>{sumDay}</b></span>
+            <div className="v-light v-border text-center">
+                {sumExpense ? (
+                    <span className="value" onClick={() => openDetail(date)}><b>{sumExpense}</b></span>
                 ) : (
                     <span className="zero-value"></span>
                 )}
             </div>
+            {Object.entries(category).map(([code]) => {
+                return (
+                    <div key={code} className="v-light v-border text-center">
+                        {items[code]
+                            ? (<span className="value" onClick={() => openDetail(date)}>{items[code]}</span>)
+                            : (<span className="zero-value"></span>)}
+                    </div>
+                );
+            })}
         </div>
     );
 }
@@ -140,7 +132,7 @@ function CategoryColumns() {
             {Object.entries(category).map(([code, name]) => (
                 <div key={code} className="v-light v-border">{name}</div>
             ))}
-            <div className="">Всього</div>
+            {/*<div className="">Всього</div>*/}
         </div>
     );
 }

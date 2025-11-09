@@ -15,10 +15,11 @@ import {formatDateForShow} from "@/lib/DateHelper";
 
 export default function StatAll({ data, dateStart, dateEnd }) {
     const sortData = getSortDataCat(data.expense);
-    const totalSum = getTotalSum(data.expense);
+    const totalExpense = getTotalSum(data.expense);
+    const totalIncome = getTotalSum(data.income);
     const allDates = getDatesInRange(dateStart, dateEnd);
     const totalSumInCats = getTotalSumInCat(sortData);
-    const chartData = getDataForChart(totalSum, totalSumInCats);
+    // const totalCategories = getDataForChart(totalExpense, totalSumInCats);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
@@ -59,9 +60,6 @@ export default function StatAll({ data, dateStart, dateEnd }) {
 
     return (
         <div>
-            {/*<div className="alert alert-danger" role="alert">*/}
-            {/*    Витрати <i>{totalSum}</i> UAH*/}
-            {/*</div>*/}
             <div className="d-flex mt-5">
                 <CategoryColumns />
                 <div ref={scrollRef} className="d-flex scrollable-table">
@@ -74,6 +72,26 @@ export default function StatAll({ data, dateStart, dateEnd }) {
                             openDetail={openDetail}
                         />
                     ))}
+                </div>
+                <div className="colum-expense">
+                    <div className="colum-date text-center">
+                        <b>Загалом</b>
+                    </div>
+                    <div className="v-light v-border text-center">
+                        <span className="value"><b>{totalIncome}</b></span>
+                    </div>
+                    <div className="v-light v-border text-center">
+                        <span className="value"><b>{totalExpense}</b></span>
+                    </div>
+                    {Object.entries(category).map(([code]) => {
+                        return (
+                            <div key={code} className="v-light v-border text-center">
+                                {totalSumInCats[code]
+                                    ? (<span className="value">{totalSumInCats[code]}</span>)
+                                    : (<span className="zero-value"></span>)}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
             <Modal

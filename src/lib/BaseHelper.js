@@ -74,6 +74,7 @@ export function getDataForChart(totalSum, sumInCat) {
 
     Object.keys(sumInCat).map(codeCat => {
         result.push({name: category[codeCat],
+            code: codeCat,
             value: sumInCat[codeCat],
             percentage: ((sumInCat[codeCat] / totalSum) * 100).toFixed(1)})
     });

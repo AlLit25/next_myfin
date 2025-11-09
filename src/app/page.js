@@ -38,11 +38,11 @@ export default function Home() {
     }
 
     return (
-        <div className="container">
-            <div className="m-5 text-center">
-                <p className="h1">LiVi Analytics</p>
-            </div>
+        <div className="container-fluid mt-4">
             {isAuthenticated ? <MainMenu /> : <LoginForm />}
+            <div className="text-center mt-4">
+                <p>LiVi Analytics</p>
+            </div>
         </div>
     );
 }

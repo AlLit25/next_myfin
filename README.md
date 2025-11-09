@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "dev StatAll. Total column"
+   git commit -m "dev balance page"
    ```
 
 5. Надішліть зміни до репозиторію:

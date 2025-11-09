@@ -206,7 +206,7 @@ async function syncBalance(sum, type) {
 
     if (balance.data.id > 0) {
         balanceSum = type === 'expense' ? balance.data.uah - Number(sum) : balance.data.uah + Number(sum);
-        await updateBalance(balance.data.id, balanceSum);
+        await updateBalance(balance.data.id);
     }
 }
 
@@ -221,6 +221,35 @@ export async function updateBalance(id, sum) {
         const session = JSON.parse(getAuthToken());
         const data = {
             'uah': sum,
+            'user_id': session.user.id
+        }
+
+        const { error } = await DB.from(TABLE.balance)
+            .update(data)
+            .eq('id', id);
+
+        if (error) {
+            throw error;
+        }
+
+        return true;
+    } catch (err) {
+        console.error('Помилка запиту:', err.message);
+        return false;
+    }
+}
+
+export async function updateUsd(id, sum) {
+    try {
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            throw 'Користувач не авторизований';
+        }
+
+        const session = JSON.parse(getAuthToken());
+        const data = {
+            'usd': sum,
             'user_id': session.user.id
         }
 

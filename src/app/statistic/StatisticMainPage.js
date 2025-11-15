@@ -48,7 +48,7 @@ export default function StatisticMainPage() {
     return (
         <div>
             {isLoading
-                ? (<Load header={false} />)
+                ? (<span></span>)
                 : (
                     <>
                         <div className="row">
@@ -59,7 +59,7 @@ export default function StatisticMainPage() {
                                 <span
                                     onClick={refreshData}
                                     data-refresh="statistic"
-                                    className="refresh-icon">
+                                    className="refresh-icon d-none">
                                     <svg id="Layer_1"
                                         version="1.1"
                                         viewBox="0 0 32 32"
@@ -73,7 +73,7 @@ export default function StatisticMainPage() {
                                 </span>
                             </div>
                         </div>
-                        <div>
+                        <div className="scroll-income">
                             Дохід: {data['income'].length > 0
                             ? (<ul>{data['income'].map(elem => {
                                 totalIncome += elem.sum;
@@ -84,7 +84,7 @@ export default function StatisticMainPage() {
                             </ul>)
                             : 'відсутній'}
                         </div>
-                        <div>
+                        <div className="scroll-expense">
                             Витрати: {data['expense'].length > 0
                             ? (<ul>
                                 {data['expense'].map(elem => {

@@ -29,15 +29,7 @@ export default function Desktop() {
                         <div className="d-flex justify-content-center">
                             <SelectDate />
                         </div>
-
-                        <div className="d-flex justify-content-center mt-3">
-                            <h4>Дохід</h4>
-                        </div>
                         <IncomeMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
-
-                        <div className="d-flex justify-content-center mt-4">
-                            <h4>Витрати</h4>
-                        </div>
                         <ExpenseMainPage setTextNotify={setTextNotify}  setShowNotify={setShowNotify} />
                     </div>
                 </div>

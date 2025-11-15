@@ -206,7 +206,8 @@ async function syncBalance(sum, type) {
 
     if (balance.data.id > 0) {
         balanceSum = type === 'expense' ? balance.data.uah - Number(sum) : balance.data.uah + Number(sum);
-        await updateBalance(balance.data.id);
+
+        await updateBalance(balance.data.id, balanceSum);
     }
 }
 
@@ -316,7 +317,7 @@ export async function getBalance() {
         const { data, error } = await DB.from(TABLE.balance)
             .select('*')
             .eq('user_id', session.user.id)
-            .eq('type', 'current')
+            .eq('type', 'total')
             .single();
         if (error) {
             result.error = `Помилка отримання даних із ${TABLE.balance}: `+error.message;

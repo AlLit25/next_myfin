@@ -86,19 +86,13 @@ export default function Mobile() {
                         <div className="slide p-3">
                             <div className="d-block-desk" style={{ width: '100%' }}>
                                 <BalanceMainPage />
-                            </div>
-                            <div className="d-block-desk mt-3" style={{ width: '100%' }}>
                                 <StatisticMainPage />
                             </div>
                         </div>
                         <div className="slide p-3">
-                            <div className="d-block-desk d-flex justify-content-center">
+                            <div className="d-block-desk mt-3" style={{ width: '100%' }}>
                                 <SelectDate />
-                            </div>
-                            <div className="d-block-desk mt-3" style={{ width: '100%' }}>
                                 <IncomeMainPage setTextNotify={setTextNotify} setShowNotify={setShowNotify} />
-                            </div>
-                            <div className="d-block-desk mt-3" style={{ width: '100%' }}>
                                 <ExpenseMainPage setTextNotify={setTextNotify} setShowNotify={setShowNotify} />
                             </div>
                         </div>

@@ -43,7 +43,7 @@ export default function IncomeMainPage({setTextNotify, setShowNotify}) {
     return (
         <div>
             {isLoading
-                ? (<Load header={false} />)
+                ? (<Load />)
                 : (<>
                     <div className="row">
                         <div className="mb-2 col-sm-12 d-flex justify-content-center">

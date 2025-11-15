@@ -80,6 +80,7 @@ export default function StatisticTable() {
                 <div className="col-md-4 col-sm-12 mt-2 text-end">
                     <button type="button"
                             className="btn btn-success"
+                            data-refresh="statistics_table"
                             onClick={showData}>
                         Відобразити
                     </button>

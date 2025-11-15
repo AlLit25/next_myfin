@@ -1,4 +1,5 @@
 import {category} from "@/lib/supabase";
+import {refreshData} from "@/app/balance/BalanceMainPage";
 
 export function getTotalSum(data) {
     let result = 0;
@@ -123,12 +124,21 @@ export function getDateFromMainPage() {
 export function refreshDataOnMainPage() {
     const btnRefreshBalance = document.querySelector('span[data-refresh="balance"]');
     const btnRefreshStatistic = document.querySelector('span[data-refresh="statistic"]');
+    const statisticsBlockBtn = document.querySelector('button[data-refresh="statistics_table"]');
 
-    if (btnRefreshBalance !== undefined) {
+    if (btnRefreshBalance !== undefined && btnRefreshBalance !== null) {
         btnRefreshBalance.click();
     }
 
-    if (btnRefreshStatistic !== undefined) {
+    if (btnRefreshStatistic !== undefined && btnRefreshStatistic !== null) {
         btnRefreshStatistic.click();
     }
+
+    if (statisticsBlockBtn !== undefined && statisticsBlockBtn !== null) {
+        statisticsBlockBtn.click();
+    }
+}
+
+export function toBalance() {
+    location.href = '/balance';
 }

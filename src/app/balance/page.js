@@ -35,17 +35,9 @@ export default function Balance() {
 
     return (
         isLoading
-            ? <div>
-                <div className="d-block">
-                    <NavButton href={"/"} color={'secondary'} text={'На головну'} />
-                </div>
-                <Load header={false} />
-            </div>
+            ? <Load />
             : <div>
                 <Notify show={showNotify} text={textNotify} setShowDefault={setShowNotify} />
-                <div className="d-block">
-                    <NavButton href={"/"} color={'secondary'} text={'На головну'} />
-                </div>
                 <div className="mt-3 text-center">
                     <h1>Баланс {curBalance} UAH</h1>
                 </div>
@@ -110,6 +102,9 @@ export default function Balance() {
                         min="0"
                     />
                     <span className="m-2"> У гривні: {curBalanceUsd*exchangeRate}</span>
+                </div>
+                <div className="d-block">
+                    <NavButton href={"/"} color={'secondary'} text={'На головну'} />
                 </div>
             </div>
     );

@@ -8,7 +8,7 @@ div.alert-default,
 select.s-default,
 textarea.t-default,
 input.i-default {
-  width: 300px;
+  width: 280px;
 }
 
 .c-modal {
@@ -32,6 +32,14 @@ input.i-default {
 
 .fade-out {
   animation: slideOutToTop 0.5s ease-in-out forwards;
+}
+
+.scroll-income {
+  height: 150px; overflow-y: auto;
+}
+
+.scroll-expense {
+    height: 200px; overflow-y: auto;
 }
 
 @keyframes slideInFromTop {

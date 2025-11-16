@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "bug fix. edit main page desc/mob."
+   git commit -m "dev balance page. Add categories and function update data"
    ```
 
 5. Надішліть зміни до репозиторію:

@@ -1,14 +1,14 @@
 "use client";
 
 import NavButton from "@/components/NavButton";
-import {useEffect, useState} from "react";
-import {getBalance, getStatisticsBalance, updateBalance, updateUsd} from "@/lib/DbHelper";
+import {useEffect, useMemo, useState} from "react";
+import {getBalance, getOtherBalance, getStatisticsBalance, updateBalance, updateUsd} from "@/lib/DbHelper";
 import Load from "@/components/Load";
 import Notify from "@/components/Notify";
+import {log} from "next/dist/server/typescript/utils";
 
 export default function Balance() {
     const [sumBalance, setSumBalance] = useState(0);
-    const [inputs, setInputs] = useState([{ id: Date.now(), value: 0 }]);
     const [curBalance, setCurBalance] = useState(0);
     const [curBalanceUsd, setCurBalanceUsd] = useState(0);
     const [idBalance, setIdBalance] = useState(0);
@@ -16,12 +16,21 @@ export default function Balance() {
     const [showNotify, setShowNotify] = useState(false);
     const [textNotify, setTextNotify] = useState('');
     const [exchangeRate, setExchangeRate] = useState(42.05);
-
-    // getStatisticsBalance().then(data => {
-    //     console.log(data);
-    // });
+    const [balances, setBalances] = useState([]);
 
     useEffect(() => {
+        getOtherBalance().then(data => {
+            if (data.data.length > 0) {
+                const buffer = [];
+
+                data.data.map(elem =>  {
+                    buffer.push({id: elem.id, uah: elem.uah || 0, name: elem.name});
+                });
+
+                setBalances(buffer);
+            }
+        });
+
         getBalance().then(elem => {
             if (elem.data !== null) {
                 setCurBalance(elem.data.uah || 0)
@@ -31,7 +40,23 @@ export default function Balance() {
 
             setIsLoading(false);
         });
-    }, [])
+
+    }, []);
+
+    const handleChange = (id, newValue) => {
+        setBalances(prevBalances =>
+            prevBalances.map(elem =>
+                elem.id === id ? { ...elem, uah: newValue } : elem
+            )
+        );
+    };
+
+    const totalSum = useMemo(() => {
+        return balances.reduce((acc, elem) => {
+            const value = parseFloat(elem.uah) || 0;
+            return acc + value;
+        }, 0);
+    }, [balances]);
 
     return (
         isLoading
@@ -42,37 +67,25 @@ export default function Balance() {
                     <h1>Баланс {curBalance} UAH</h1>
                 </div>
                 <div className="d-block text-center">
-                    <p>Перевірка баланс: {sumBalance} UAH</p>
-                </div>
-                <div className="mt-3 text-center">
-                    <h4>Звірити</h4>
-                </div>
-                <div className="d-block">
-                    {inputs.map((input, index) => (
-                        <div key={input.id} className="d-flex justify-content-center mt-3">
-                            <input
-                                type="number"
-                                className="i-default form-control"
-                                value={input.value || ''}
-                                onChange={(e) => sumBalancePlus(e.target.value, index)}
-                                min="0"
-                            />
-                            <span className="m-2">
-                                <button
-                                    type="button"
-                                    className="btn-close"
-                                    aria-label="Close"
-                                    disabled={inputs.length === 1}
-                                    onClick={() => removeInputBlock(input.id)}></button>
-                            </span>
+                    {balances.map(elem => (
+                        <div key={elem.id} className="row m-1">
+                            <div className="col-6 text-end mt-2">
+                                <span>{elem.name}</span>
+                            </div>
+                            <div className="col-6 col-md-2">
+                                <input className="form-control"
+                                    type="text" value={elem.uah}
+                                    onChange={(e) =>
+                                        handleChange(elem.id, e.target.value)} />
+                            </div>
                         </div>
                     ))}
                 </div>
                 <div className="d-flex justify-content-center mt-3">
-                    <button type="button" className="btn btn-success" onClick={addInputBlock}>Додати ще</button>
+                    <p>Загальна: <span className="error-color">{totalSum}</span> UAH</p>
                 </div>
                 <div className="d-flex justify-content-center mt-3">
-                    <p>Різниця: <span className="error-color">{ sumBalance - curBalance }</span> UAH</p>
+                    <p>Різниця: <span className="error-color">{ totalSum - curBalance }</span> UAH</p>
                 </div>
                 <div className="d-flex justify-content-center">
                     <button type="button" className="btn btn-success b-default" onClick={saveBalance}>
@@ -98,7 +111,7 @@ export default function Balance() {
                         className="form-control"
                         style={{ width: "100px" }}
                         value={exchangeRate}
-                        onChange={e =>setExchangeRate(e.target.value)}
+                        onChange={e => setExchangeRate(e.target.value)}
                         min="0"
                     />
                     <span className="m-2"> У гривні: {curBalanceUsd*exchangeRate}</span>
@@ -109,35 +122,19 @@ export default function Balance() {
             </div>
     );
 
-    function sumBalancePlus(value, index) {
-        const newInputs = [...inputs];
-        newInputs[index].value = Number(value);
-        setInputs(newInputs);
-        setSumBalance(newInputs.reduce((sum, input) => sum + input.value, 0));
-    }
-
-    function addInputBlock() {
-        setInputs([...inputs, { id: Date.now(), value: 0 }]);
-    }
-
-    function removeInputBlock(id) {
-        if (inputs.length > 1) {
-            const newInputs = inputs.filter(input => input.id !== id);
-            setInputs(newInputs);
-            setSumBalance(newInputs.reduce((sum, input) => sum + input.value, 0));
-        }
-    }
-
     function saveBalance() {
         let update;
-        if (sumBalance - curBalance !== 0) {
+        if (curBalance - sumBalance !== 0) {
             update = confirm('Різниція не дорівнює 0. Продовжити?')
         } else {
             update = true;
         }
 
         if (update) {
-            updateBalance(idBalance, sumBalance).then(result => {
+            balances.map(elem => {
+               updateBalance(elem.id, elem.uah).then(res => console.log(res));
+            });
+            updateBalance(idBalance, totalSum).then(result => {
                 setShowNotify(true);
                 if (result) {
                     setTextNotify('Дані оновлено');

@@ -269,39 +269,6 @@ export async function updateUsd(id, sum) {
     }
 }
 
-export async function createFinBalance(sum, type) {
-    const result = { data: null, error: '' };
-
-    try {
-        const isAuthenticated = await checkAuth();
-
-        if (!isAuthenticated) {
-            result.error = 'Користувач не авторизований';
-            return result;
-        }
-        const session = JSON.parse(getAuthToken());
-        const data = {
-            uah: sum,
-            user_id: session.user.id,
-            type: type,
-            created_at: new Date().toISOString(),
-        };
-
-        const { data: createdData, error } = await DB.from(TABLE.balance)
-            .insert([data])
-            .select();
-
-        if (error) {
-            result.error = `Помилка створення в ${TABLE.balance}: ${error.message} (код: ${error.code || 'невідомий'})`;
-        }
-
-    } catch (err) {
-        result.error = 'Помилка запиту: '+err.message;
-    }
-
-    return result;
-}
-
 export async function getBalance() {
     const result = { data: null, error: '' };
 
@@ -319,6 +286,35 @@ export async function getBalance() {
             .eq('user_id', session.user.id)
             .eq('type', 'total')
             .single();
+        if (error) {
+            result.error = `Помилка отримання даних із ${TABLE.balance}: `+error.message;
+            return result;
+        }
+
+        result.data = data;
+    } catch (err) {
+        result.error = 'Виняток у getBalance: ' + err.message;
+    }
+
+    return result;
+}
+
+export async function getOtherBalance() {
+    const result = { data: null, error: '' };
+
+    try {
+        const isAuthenticated = await checkAuth();
+
+        if (!isAuthenticated) {
+            result.error = 'Користувач не авторизований';
+            return result;
+        }
+
+        const session = JSON.parse(getAuthToken());
+        const { data, error } = await DB.from(TABLE.balance)
+            .select('*')
+            .eq('user_id', session.user.id)
+            .neq('type', 'total');
         if (error) {
             result.error = `Помилка отримання даних із ${TABLE.balance}: `+error.message;
             return result;

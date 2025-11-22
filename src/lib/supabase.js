@@ -12,7 +12,7 @@ export const TABLE = {
 export const category = {
     "pr": "Продукти",
     "cf": "Кафе",
-    "cm": "Кумунальні платежі",
+    "cm": "Комунальні платежі",
     "md": "Аптека",
     "eva": "Eva/Makeup",
     "zoo": "Зоотовари",

@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "dev balance page. Add categories and function update data"
+   git commit -m "dev main page. Add component for show category balance on main page"
    ```
 
 5. Надішліть зміни до репозиторію:

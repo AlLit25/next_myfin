@@ -9,6 +9,7 @@ import Notify from "@/components/Notify";
 import {useState} from "react";
 import SelectDate from "@/components/main/SelectDate";
 import StatisticTable from "@/app/statistic/StatisticTable";
+import BalanceCategoryCompact from "@/components/balance/BalanceCategoryCompact";
 
 export default function Desktop() {
     const [showNotify, setShowNotify] = useState(false);
@@ -35,6 +36,11 @@ export default function Desktop() {
                 </div>
             </div>
             <div className="row m-1">
+                <div className="d-block-narrowly">
+                    <BalanceCategoryCompact />
+                </div>
+            </div>
+            <div className="row m-1 mt-3">
                 <div className="d-block-desk-no-hover">
                     <StatisticTable />
                 </div>

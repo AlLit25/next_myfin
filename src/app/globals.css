@@ -11,6 +11,26 @@ input.i-default {
   width: 280px;
 }
 
+.no-wrap {
+  white-space: nowrap;
+}
+
+.block-horizontal-scroll {
+  overflow-x: hidden;
+}
+
+.horizontal-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 .c-modal {
   position: fixed;
   top: 20px;

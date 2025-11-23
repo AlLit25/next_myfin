@@ -20,7 +20,7 @@ export default function BalanceCategoryCompact() {
             }
         });
 
-    }, [balanceCategory]);
+    }, []);
 
     return (
         <div className="d-flex horizontal-scroll">

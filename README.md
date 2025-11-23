@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "edit category name"
+   git commit -m "add update balance after edit expense sum in modal window"
    ```
 
 5. Надішліть зміни до репозиторію:

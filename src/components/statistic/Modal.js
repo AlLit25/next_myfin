@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import '../../../public/style/Modal.css';
 import {category} from "@/lib/supabase";
-import {deleteData, editSum} from "@/lib/DbHelper";
-import {getHomePath} from "@/lib/DbHelper";
+import {deleteData, editSum, getBalance, updateBalance} from "@/lib/DbHelper";
 
 export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) {
-    const baseLink = getHomePath();
     const modalRef = useRef(null);
     const [isVisible, setIsVisible] = useState(false);
     const [editBtnShow, setEditBtnShow] = useState(false);
@@ -190,6 +188,8 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
             }
         });
 
+        setNewBalance(editedItems, originalItemsRef.current);
+
         if (updatePromises.length > 0) {
             try {
                 await Promise.all(updatePromises);
@@ -208,6 +208,23 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
             setIsVisible(false);
         }
     }
-};
+
+    function setNewBalance(editItems, originalItems) {
+        let editSum = 0;
+        let originalSum = 0;
+
+        editedItems.map((item) => {editSum += item.sum;});
+        originalItems.map((item) => {originalSum += item.sum;});
+
+        const diffSum = editSum - originalSum;
+
+        if (diffSum !== 0) {
+            getBalance().then(elem => {
+                const newBalanceSum = elem.data.uah + diffSum;
+                updateBalance(elem.data.id, newBalanceSum).then(res => console.log(res));
+            });
+        }
+    }
+}
 
 

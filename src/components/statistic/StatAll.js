@@ -19,7 +19,6 @@ export default function StatAll({ data, dateStart, dateEnd }) {
     const totalIncome = getTotalSum(data.income);
     const allDates = getDatesInRange(dateStart, dateEnd);
     const totalSumInCats = getTotalSumInCat(sortData);
-    // const totalCategories = getDataForChart(totalExpense, totalSumInCats);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);

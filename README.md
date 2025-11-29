@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "add update balance after edit expense sum in modal window"
+   git commit -m "edit main page. chenge component BalanceCategoryCompact"
    ```
 
 5. Надішліть зміни до репозиторію:

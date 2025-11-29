@@ -36,7 +36,7 @@ export default function Desktop() {
                 </div>
             </div>
             <div className="row m-1">
-                <div className="d-block-narrowly">
+                <div className="d-block-250">
                     <BalanceCategoryCompact />
                 </div>
             </div>

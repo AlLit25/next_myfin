@@ -117,34 +117,48 @@ export async function getStatistic(from, to) {
 
 export async function insertData(date, sum, type, category, comment) {
     try {
-        const isAuthenticated = await checkAuth();
-
-        if (!isAuthenticated) {
-            throw 'Користувач не авторизований';
-        }
-
-        const session = JSON.parse(getAuthToken());
-        const data = {
-            'sum': sum,
-            'type': type,
-            'user_id': session.user.id,
-            'created_at': new Date(date),
-            'category': category || null,
-            'comment': comment || null,
-        }
-
-        const { error } = await DB.from(TABLE.main).insert([data]);
-
-        if (error) {
-            throw error;
-        }
-
+        await insert(date, sum, type, category, comment);
         await syncBalance(sum, type);
 
         return true;
     } catch (err) {
         console.error('Помилка запиту:', err.message);
         return false;
+    }
+}
+
+export async function insertDataNoSync(date, sum, type, category, comment) {
+    try {
+        await insert(date, sum, type, category, comment);
+
+        return true;
+    } catch (err) {
+        console.error('Помилка запиту:', err.message);
+        return false;
+    }
+}
+
+async function insert(date, sum, type, category, comment) {
+    const isAuthenticated = await checkAuth();
+
+    if (!isAuthenticated) {
+        throw 'Користувач не авторизований';
+    }
+
+    const session = JSON.parse(getAuthToken());
+    const data = {
+        'sum': sum,
+        'type': type,
+        'user_id': session.user.id,
+        'created_at': new Date(date),
+        'category': category || null,
+        'comment': comment || null,
+    }
+
+    const { error } = await DB.from(TABLE.main).insert([data]);
+
+    if (error) {
+        throw error;
     }
 }
 

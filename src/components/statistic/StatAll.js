@@ -83,10 +83,12 @@ export default function StatAll({ data, dateStart, dateEnd }) {
                         <span className="value"><b>{totalExpense}</b></span>
                     </div>
                     {Object.entries(category).map(([code]) => {
+                        const categorySum = totalSumInCats[code] || 0;
+                        const percentage = totalExpense > 0 ? Math.round((categorySum / totalExpense) * 100 * 10) / 10 : 0;
                         return (
                             <div key={code} className="v-light v-border text-center">
-                                {totalSumInCats[code]
-                                    ? (<span className="value">{totalSumInCats[code]}</span>)
+                                {categorySum
+                                    ? (<span className="value">{categorySum} ({percentage}%)</span>)
                                     : (<span className="zero-value"></span>)}
                             </div>
                         );

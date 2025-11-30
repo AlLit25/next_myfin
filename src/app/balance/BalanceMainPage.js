@@ -21,9 +21,7 @@ export default function BalanceMainPage() {
                 <>
                     <div className="row">
                         <div>
-                            <Link href="/balance" className="next-btn-inline">
-                                <h2>Баланс {curBalance} UAH</h2>
-                            </Link>
+                            <h2>Баланс {curBalance} UAH</h2>
                         </div>
                         <div className="col-3 pt-2 text-end d-none">
                             <span onClick={refreshData}

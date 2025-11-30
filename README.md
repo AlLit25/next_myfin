@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "edit main page. chenge component BalanceCategoryCompact"
+   git commit -m "edit main page. bug fix. add percent to statistic table. version 1.0"
    ```
 
 5. Надішліть зміни до репозиторію:

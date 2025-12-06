@@ -3,9 +3,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {category} from "@/lib/supabase";
 import {
-    getDataForChart,
     getDatesInRange,
-    getExpenseOfDay, getIncomeSumOfDay,
+    getExpenseOfDay,
     getSortDataCat, getSumOfDay,
     getTotalSum,
     getTotalSumInCat
@@ -50,10 +49,11 @@ export default function StatAll({ data, dateStart, dateEnd }) {
     }
 
     const openDetail = (date) => {
-        const dayExpense = getExpenseOfDay(data.expense, date);
+        const dayStatic = {'expense': getExpenseOfDay(data.expense, date),
+            'income': getExpenseOfDay(data.income, date)};
 
         setSelectedDate(date);
-        setSelectedItems(dayExpense || []);
+        setSelectedItems(dayStatic || []);
         setIsModalOpen(true);
     };
 

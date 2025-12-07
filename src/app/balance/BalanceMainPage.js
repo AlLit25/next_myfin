@@ -4,6 +4,7 @@ import React, {useEffect, useState} from "react";
 import {getBalance} from "@/lib/DbHelper";
 import Load from "@/components/Load";
 import Link from "next/link";
+import {formatNumber} from "@/lib/BaseHelper";
 
 export default function BalanceMainPage() {
     const [curBalance, setCurBalance] = useState(0);
@@ -21,7 +22,7 @@ export default function BalanceMainPage() {
                 <>
                     <div className="row">
                         <div>
-                            <h2>Баланс {curBalance} UAH</h2>
+                            <h2>Баланс {formatNumber(curBalance)} UAH</h2>
                         </div>
                         <div className="col-3 pt-2 text-end d-none">
                             <span onClick={refreshData}

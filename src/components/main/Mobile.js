@@ -9,6 +9,7 @@ import ExpenseMainPage from "@/app/expense/ExpenseMainPage";
 import Notify from "@/components/Notify";
 import { useState, useRef } from "react";
 import SelectDate from "@/components/main/SelectDate";
+import StatisticTotal from "@/app/statistic/StatisticTotal";
 
 export default function Mobile() {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -20,7 +21,7 @@ export default function Mobile() {
     const currentX = useRef(0);
     const isDragging = useRef(false);
 
-    const totalSlides = 2;
+    const totalSlides = 3;
 
     const handleTouchStart = (e) => {
         startX.current = e.touches[0].clientX;
@@ -90,16 +91,22 @@ export default function Mobile() {
                             </div>
                         </div>
                         <div className="slide p-3">
-                            <div className="d-block-desk mt-3" style={{ width: '100%' }}>
-                                <SelectDate />
+                            <div className="d-block-desk" style={{ width: '100%' }}>
+                                <div className="text-center"><h1>Додати дані</h1></div>
+                                <div className="d-flex justify-content-center"><SelectDate /></div>
                                 <IncomeMainPage setTextNotify={setTextNotify} setShowNotify={setShowNotify} />
                                 <ExpenseMainPage setTextNotify={setTextNotify} setShowNotify={setShowNotify} />
+                            </div>
+                        </div>
+                        <div className="slide p-3">
+                            <div className="d-block-desk" style={{ width: '100%' }}>
+                                <StatisticTotal />
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="dots">
-                    {[0, 1].map((slide) => (
+                    {[0, 1, 2].map((slide) => (
                         <span
                             key={slide}
                             className={`dot ${currentSlide === slide ? 'active' : ''}`}

@@ -23,6 +23,7 @@
 /* Якщо .d-block-desk не має width: 100%, додайте: */
 .d-block-desk {
     width: 100%;
+    height: 600px;
 }
 
 .dots {
@@ -43,4 +44,9 @@
 
 .dot.active {
     background-color: #000;
+}
+
+.static-y {
+    width: 100%;
+    overflow: hidden;
 }

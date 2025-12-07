@@ -5,6 +5,7 @@ import {formatDateForShow, getCurrentDay} from "@/lib/DateHelper";
 import {getStatistic} from "@/lib/DbHelper";
 import Load from "@/components/Load";
 import {category} from "@/lib/supabase";
+import {formatNumber} from "@/lib/BaseHelper";
 
 export default function StatisticMainPage() {
     const [data, setData] = useState({ income: [], expense: [] });
@@ -77,9 +78,9 @@ export default function StatisticMainPage() {
                             Дохід: {data['income'].length > 0
                             ? (<ul>{data['income'].map(elem => {
                                 totalIncome += elem.sum;
-                                return (<li key={elem.id}>{elem.sum} UAH</li>)
+                                return (<li key={elem.id}>{formatNumber(elem.sum)} UAH</li>)
                             })} {data['income'].length > 1
-                                ? (<li><b>Загалом:</b> {totalIncome} UAH</li>)
+                                ? (<li><b>Загалом:</b> {formatNumber(totalIncome)} UAH</li>)
                                 : ''}
                             </ul>)
                             : 'відсутній'}
@@ -90,12 +91,12 @@ export default function StatisticMainPage() {
                                 {data['expense'].map(elem => {
                                     totalExpense += elem.sum;
                                     return (<li key={elem.id}>
-                                            {elem.sum} UAH ({category[elem.category]})
+                                            {formatNumber(elem.sum)} UAH ({category[elem.category]})
                                         </li>
                                     )
                                 })}
                                 {data['expense'].length > 0
-                                    ? (<li><b>Загалом:</b> {totalExpense} UAH</li>)
+                                    ? (<li><b>Загалом:</b> {formatNumber(totalExpense)} UAH</li>)
                                     : ''}
                             </ul>)
                             : 'відсутні'}

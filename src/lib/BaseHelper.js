@@ -142,3 +142,8 @@ export function refreshDataOnMainPage() {
 export function toBalance() {
     location.href = '/balance';
 }
+
+export function formatNumber (num) {
+    if (num === null || num === undefined) return '0';
+    return String(num).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+}

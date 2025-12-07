@@ -101,7 +101,7 @@ export default function BalanceCategoryCompact() {
         }
     }
 
-    console.log(balances.length);
+    // console.log(balances.length);
 
     return (
         isLoading

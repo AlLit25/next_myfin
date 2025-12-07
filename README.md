@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "edit statAll. edit Modal"
+   git commit -m "fix mobile template. add slide - StatisticTotal"
    ```
 
 5. Надішліть зміни до репозиторію:

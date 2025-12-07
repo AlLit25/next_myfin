@@ -8,8 +8,10 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
     const [isVisible, setIsVisible] = useState(false);
     const [editBtnShow, setEditBtnShow] = useState(false);
     const [delElem, setDelElem] = useState(false);
-    const [editedItems, setEditedItems] = useState([]);
-    const originalItemsRef = useRef([]);
+    const [editedIncome, setEditedIncome] = useState([]);
+    const [editedExpense, setEditedExpense] = useState([]);
+    const originalIncomeRef = useRef([]);
+    const originalExpenseRef = useRef([]);
 
     useEffect(() => {
         if (isOpen) {
@@ -33,16 +35,12 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
 
     useEffect(() => {
         if (editBtnShow) {
-            setEditedItems(selectedItems.expense.map(item => ({ ...item })));
+            originalIncomeRef.current = JSON.parse(JSON.stringify(selectedItems.income));
+            setEditedIncome(selectedItems.income.map(item => ({ ...item })));
+            originalExpenseRef.current = JSON.parse(JSON.stringify(selectedItems.expense));
+            setEditedExpense(selectedItems.expense.map(item => ({ ...item })));
         }
-    }, [editBtnShow, selectedItems.expense]);
-
-    useEffect(() => {
-        if (editBtnShow && selectedItems.expense.length > 0) {
-            originalItemsRef.current = JSON.parse(JSON.stringify(selectedItems.expense));
-            setEditedItems(selectedItems.expense.map(item => ({ ...item })));
-        }
-    }, [editBtnShow, selectedItems.expense]);
+    }, [editBtnShow, selectedItems.income, selectedItems.expense]);
 
     function closeModal() {
         setIsVisible(false);
@@ -61,16 +59,26 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
         }
     }
 
-    function updateSum(id, newSum) {
+    function updateSum(id, newSum, type) {
         const numSum = parseFloat(newSum) || 0;
-        setEditedItems(prev => prev.map(item =>
-            item.id === id ? { ...item, sum: numSum } : item
-        ));
+        if (type === 'income') {
+            setEditedIncome(prev => prev.map(item =>
+                item.id === id ? { ...item, sum: numSum } : item
+            ));
+        } else {
+            setEditedExpense(prev => prev.map(item =>
+                item.id === id ? { ...item, sum: numSum } : item
+            ));
+        }
     }
 
-    function deleteItem(id) {
+    function deleteItem(id, type) {
         deleteData(id).then(() => {
-            setEditedItems(prev => prev.filter(item => item.id !== id));
+            if (type === 'income') {
+                setEditedIncome(prev => prev.filter(item => item.id !== id));
+            } else {
+                setEditedExpense(prev => prev.filter(item => item.id !== id));
+            }
             setDelElem(true);
         });
     }
@@ -81,61 +89,71 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
             return;
         }
 
-        const hasChanges = JSON.stringify(editedItems) !== JSON.stringify(originalItemsRef.current);
-
-        if (!hasChanges) {
-            setEditBtnShow(false);
-            setIsVisible(false);
-            return;
-        }
-
         setEditBtnShow(false);
 
-        const updatePromises = [];
+        // Обчислення diff для income
+        let incomeEditSum = 0;
+        editedIncome.forEach(item => { incomeEditSum += item.sum; });
+        let incomeOriginalSum = 0;
+        originalIncomeRef.current.forEach(item => { incomeOriginalSum += item.sum; });
+        const diffIncome = incomeEditSum - incomeOriginalSum;
 
-        editedItems.forEach((itemNew) => {
-            const itemOld = originalItemsRef.current.find(item => item.id === itemNew.id);
+        // Обчислення diff для expense
+        let expenseEditSum = 0;
+        editedExpense.forEach(item => { expenseEditSum += item.sum; });
+        let expenseOriginalSum = 0;
+        originalExpenseRef.current.forEach(item => { expenseOriginalSum += item.sum; });
+        const diffExpense = expenseEditSum - expenseOriginalSum;
+        const totalDiff = diffIncome - diffExpense;
 
-            if (itemOld && itemNew.sum !== itemOld.sum) {
-                updatePromises.push(editSum(itemOld.id, itemNew.sum));
-            }
-        });
+        // Оновлення балансу, якщо є зміни
+        if (totalDiff !== 0) {
+            getBalance().then(elem => {
+                console.log('elem.data.uah', elem.data.uah);
+                const newBalanceSum = elem.data.uah + totalDiff;
+                updateBalance(elem.data.id, newBalanceSum).then(res => console.log(res));
+            });
+        }
 
-        setNewBalance(editedItems, originalItemsRef.current);
+        // Перевірка змін для income
+        const hasChangesIncome = JSON.stringify(editedIncome) !== JSON.stringify(originalIncomeRef.current);
+        const updatePromisesIncome = [];
+        if (hasChangesIncome) {
+            editedIncome.forEach((itemNew) => {
+                const itemOld = originalIncomeRef.current.find(item => item.id === itemNew.id);
+                if (itemOld && itemNew.sum !== itemOld.sum) {
+                    updatePromisesIncome.push(editSum(itemOld.id, itemNew.sum));
+                }
+            });
+        }
 
-        if (updatePromises.length > 0) {
+        // Перевірка змін для expense
+        const hasChangesExpense = JSON.stringify(editedExpense) !== JSON.stringify(originalExpenseRef.current);
+        const updatePromisesExpense = [];
+        if (hasChangesExpense) {
+            editedExpense.forEach((itemNew) => {
+                const itemOld = originalExpenseRef.current.find(item => item.id === itemNew.id);
+                if (itemOld && itemNew.sum !== itemOld.sum) {
+                    updatePromisesExpense.push(editSum(itemOld.id, itemNew.sum));
+                }
+            });
+        }
+
+        const allUpdatePromises = [...updatePromisesIncome, ...updatePromisesExpense];
+
+        if (allUpdatePromises.length > 0) {
             try {
-                await Promise.all(updatePromises);
-                originalItemsRef.current = [...editedItems];
+                await Promise.all(allUpdatePromises);
+                originalIncomeRef.current = [...editedIncome];
+                originalExpenseRef.current = [...editedExpense];
                 location.reload();
-
             } catch (error) {
                 console.error('Помилка під час оновлення даних:', error);
             }
-        }
-        else if (delElem) {
+        } else if (delElem) {
             location.reload();
-        }
-        else {
-            setEditBtnShow(false);
+        } else {
             setIsVisible(false);
-        }
-    }
-
-    function setNewBalance(editItems, originalItems) {
-        let editSum = 0;
-        let originalSum = 0;
-
-        editedItems.map((item) => {editSum += item.sum;});
-        originalItems.map((item) => {originalSum += item.sum;});
-
-        const diffSum = editSum - originalSum;
-
-        if (diffSum !== 0) {
-            getBalance().then(elem => {
-                const newBalanceSum = elem.data.uah + diffSum;
-                updateBalance(elem.data.id, newBalanceSum).then(res => console.log(res));
-            });
         }
     }
 
@@ -165,32 +183,31 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
                         <button className="custom-modal-close-btn" aria-label="Close"
                                 onClick={closeModal}>
                             <svg width="24" height="24" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round"
-                                    strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                                      strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </button>
                     </div>
                 )}
                 <div className="custom-modal-body">
-                    {selectedDate && selectedItems.expense.length > 0 ? (
-                        <ul>
-                            {(editBtnShow ? editedItems : selectedItems.expense).map(item => (
-                                <li key={item.id}>
-                                    {editBtnShow
-                                        ? (<input className="i-w" type="number" value={item.sum}
-                                            onChange={(e) =>
-                                                updateSum(item.id, e.target.value)}/>)
-                                        : (item.sum)
-                                    }
-                                    {' UAH - '}{category[item.category]}
-
-                                    {item.comment && (
-                                        <span>{' (' + item.comment + ')'}</span>
-                                    )}
-                                    {editBtnShow && (
-                                        <span onClick={() => deleteItem(item.id)}
-                                              className="delete-btn">
+                    <div>
+                        <div><h5>Дохід</h5></div>
+                        <div>
+                            {selectedDate && selectedItems.income.length > 0 ? (
+                                <ul>
+                                    {(editBtnShow ? editedIncome : selectedItems.income).map(item => (
+                                        <li key={item.id}>
+                                            {editBtnShow
+                                                ? (<input className="i-w" type="number" value={item.sum}
+                                                          onChange={(e) =>
+                                                              updateSum(item.id, e.target.value, 'income')} />)
+                                                : (item.sum)
+                                            }
+                                            {' UAH'}
+                                            {editBtnShow && (
+                                                <span onClick={() => deleteItem(item.id, 'income')}
+                                                      className="delete-btn">
                                             <svg width="24px"
                                                  height="24px"
                                                  viewBox="0 0 24 24"
@@ -200,19 +217,66 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
                                                       stroke="currentColor"
                                                       fill="#1C274C"/>
                                                 <path fillRule="evenodd"
-                                                  clipRule="evenodd"
+                                                      clipRule="evenodd"
                                                       d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z"
                                                       stroke="currentColor"
                                                       fill="#1C274C"/>
                                             </svg>
                                         </span>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>Немає витрат за цей день.</p>
-                    )}
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>Немає доходів за цей день.</p>
+                            )}
+                        </div>
+                    </div>
+                    <div>
+                        <div><h5>Витрати</h5></div>
+                        <div>
+                            {selectedDate && selectedItems.expense.length > 0 ? (
+                                <ul>
+                                    {(editBtnShow ? editedExpense : selectedItems.expense).map(item => (
+                                        <li key={item.id}>
+                                            {editBtnShow
+                                                ? (<input className="i-w" type="number" value={item.sum}
+                                                          onChange={(e) =>
+                                                              updateSum(item.id, e.target.value, 'expense')} />)
+                                                : (item.sum)
+                                            }
+                                            {' UAH - '}{category[item.category]}
+
+                                            {item.comment && (
+                                                <span>{' (' + item.comment + ')'}</span>
+                                            )}
+                                            {editBtnShow && (
+                                                <span onClick={() => deleteItem(item.id, 'expense')}
+                                                      className="delete-btn">
+                                            <svg width="24px"
+                                                 height="24px"
+                                                 viewBox="0 0 24 24"
+                                                 fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10.0303 8.96965C9.73741 8.67676 9.26253 8.67676 8.96964 8.96965C8.67675 9.26255 8.67675 9.73742 8.96964 10.0303L10.9393 12L8.96966 13.9697C8.67677 14.2625 8.67677 14.7374 8.96966 15.0303C9.26255 15.3232 9.73743 15.3232 10.0303 15.0303L12 13.0607L13.9696 15.0303C14.2625 15.3232 14.7374 15.3232 15.0303 15.0303C15.3232 14.7374 15.3232 14.2625 15.0303 13.9696L13.0606 12L15.0303 10.0303C15.3232 9.73744 15.3232 9.26257 15.0303 8.96968C14.7374 8.67678 14.2625 8.67678 13.9696 8.96968L12 10.9393L10.0303 8.96965Z"
+                                                      stroke="currentColor"
+                                                      fill="#1C274C"/>
+                                                <path fillRule="evenodd"
+                                                      clipRule="evenodd"
+                                                      d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z"
+                                                      stroke="currentColor"
+                                                      fill="#1C274C"/>
+                                            </svg>
+                                        </span>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>Немає витрат за цей день.</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
                 <div className="custom-modal-footer">
                     <button
@@ -226,5 +290,3 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
         </div>
     );
 }
-
-

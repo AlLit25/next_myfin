@@ -5,7 +5,7 @@ import Load from "@/components/Load";
 import React, {useState} from "react";
 import {insertData} from "@/lib/DbHelper";
 import {getCurrentDay} from "@/lib/DateHelper";
-import {refreshDataOnMainPage} from "@/lib/BaseHelper";
+import {getDateFromMainPage, refreshDataOnMainPage} from "@/lib/BaseHelper";
 
 export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
     const [isLoading, setIsLoading] = useState(false);
@@ -17,8 +17,15 @@ export default function ExpenseMainPage({setTextNotify, setShowNotify}) {
         setIsLoading(true);
 
         if (Number(expenseSum) > 0 && expenseCat.length > 0) {
-            const dateInfo = getCurrentDay();
-            insertData(dateInfo.from, expenseSum, 'expense', expenseCat, expenseComment).then(res => {
+            const dateInfo = getDateFromMainPage();
+
+            if (dateInfo === null) {
+                setShowNotify(true);
+                setTextNotify('Необхідно обрати дату');
+                setIsLoading(false);
+            }
+
+            insertData(dateInfo, expenseSum, 'expense', expenseCat, expenseComment).then(res => {
                 setShowNotify(true);
 
                 if (res) {

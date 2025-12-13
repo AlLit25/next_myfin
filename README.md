@@ -27,7 +27,7 @@ npm run dev
 
 4. Створіть коміт:
    ```bash
-   git commit -m "fix edit function in StatAll component"
+   git commit -m "fix bug. Select date for add expense"
    ```
 
 5. Надішліть зміни до репозиторію:

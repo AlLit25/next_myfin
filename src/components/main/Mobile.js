@@ -10,9 +10,10 @@ import Notify from "@/components/Notify";
 import { useState, useRef } from "react";
 import SelectDate from "@/components/main/SelectDate";
 import StatisticTotal from "@/app/statistic/StatisticTotal";
+import BalanceDetailSlide from "@/components/balance/BalanceDetailSlide";
 
 export default function Mobile() {
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const [currentSlide, setCurrentSlide] = useState(1);
     const [showNotify, setShowNotify] = useState(false);
     const [textNotify, setTextNotify] = useState('');
 
@@ -21,7 +22,7 @@ export default function Mobile() {
     const currentX = useRef(0);
     const isDragging = useRef(false);
 
-    const totalSlides = 3;
+    const totalSlides = 4;
 
     const handleTouchStart = (e) => {
         startX.current = e.touches[0].clientX;
@@ -86,6 +87,11 @@ export default function Mobile() {
                         onTouchEnd={handleTouchEnd}>
                         <div className="slide p-3">
                             <div className="d-block-desk" style={{ width: '100%' }}>
+                                <BalanceDetailSlide />
+                            </div>
+                        </div>
+                        <div className="slide p-3">
+                            <div className="d-block-desk" style={{ width: '100%' }}>
                                 <BalanceMainPage />
                                 <StatisticMainPage />
                             </div>
@@ -106,7 +112,7 @@ export default function Mobile() {
                     </div>
                 </div>
                 <div className="dots">
-                    {[0, 1, 2].map((slide) => (
+                    {[0, 1, 2, 3].map((slide) => (
                         <span
                             key={slide}
                             className={`dot ${currentSlide === slide ? 'active' : ''}`}

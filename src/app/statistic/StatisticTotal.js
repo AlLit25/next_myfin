@@ -65,7 +65,6 @@ export default function StatisticTotal() {
                             <td>{formatNumber(totalSumInCats[code])} грн</td>
                         </tr>
                     ))}
-
                     </tbody>
                 </table>
             </div>

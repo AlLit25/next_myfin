@@ -109,9 +109,8 @@ export default function Modal({ isOpen, onClose, selectedDate, selectedItems }) 
         // Оновлення балансу, якщо є зміни
         if (totalDiff !== 0) {
             getBalance().then(elem => {
-                console.log('elem.data.uah', elem.data.uah);
                 const newBalanceSum = elem.data.uah + totalDiff;
-                updateBalance(elem.data.id, newBalanceSum).then(res => console.log(res));
+                updateBalance(elem.data.id, newBalanceSum).then();
             });
         }
 

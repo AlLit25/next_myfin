@@ -1,9 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import {getTotalSum} from "@/lib/BaseHelper";
-import {deleteData, editSum, getHomePath} from "@/lib/DbHelper";
+import {deleteData, editSum} from "@/lib/DbHelper";
 
 export default function IncomeTable({data}) {
-    const baseLink = getHomePath();
     const [editBtnShow, setEditBtnShow] = useState(false);
     const [editedItems, setEditedItems] = useState(data);
     const originalItemsRef = useRef([]);
@@ -24,6 +23,66 @@ export default function IncomeTable({data}) {
     useEffect(() => {
         data = editBtnShow ? editedItems : data;
     }, [editBtnShow, editedItems, data]);
+
+
+    function editAction() {
+        const state = !editBtnShow;
+        setEditBtnShow(state);
+
+        if (!state) {
+            location.reload();
+        }
+    }
+
+    function updateSum(id, newSum) {
+        const numSum = parseFloat(newSum) || 0;
+
+        setEditedItems(prev => prev.map(item =>
+            item.id === id
+                ? { ...item, sum: numSum }
+                : item
+        ));
+    }
+
+    function deleteItem(id) {
+        deleteData(id).then(() => {
+            setEditedItems(prev => prev.filter(item => item.id !== id));
+        });
+    }
+
+    async function handleSave() {
+        const hasChanges = JSON.stringify(editedItems) !== JSON.stringify(originalItemsRef.current);
+
+        if (!hasChanges) {
+            setEditBtnShow(false);
+            location.reload();
+            return;
+        }
+
+        setEditBtnShow(false);
+
+        const updatePromises = [];
+
+        editedItems.forEach((itemNew) => {
+            const itemOld = originalItemsRef.current.find(item => item.id === itemNew.id);
+
+            if (itemOld && itemNew.sum !== itemOld.sum) {
+                updatePromises.push(editSum(itemOld.id, itemNew.sum));
+            }
+        });
+
+        if (updatePromises.length > 0) {
+            try {
+                await Promise.all(updatePromises);
+                originalItemsRef.current = [...editedItems];
+            } catch (error) {
+                console.error('Помилка під час оновлення даних:', error);
+            }
+        } else {
+            setEditBtnShow(false);
+        }
+        location.reload();
+    }
 
     if (data.length > 0) {
         const totalSum = getTotalSum(data);
@@ -101,64 +160,5 @@ export default function IncomeTable({data}) {
                 Дані відсутні
             </div>
         );
-    }
-
-    function editAction() {
-        const state = !editBtnShow;
-        setEditBtnShow(state);
-
-        if (!state) {
-            location.reload();
-        }
-    }
-
-    function updateSum(id, newSum) {
-        const numSum = parseFloat(newSum) || 0;
-
-        setEditedItems(prev => prev.map(item =>
-                item.id === id
-                    ? { ...item, sum: numSum }
-                    : item
-        ));
-    }
-
-    function deleteItem(id) {
-        deleteData(id).then(() => {
-            setEditedItems(prev => prev.filter(item => item.id !== id));
-        });
-    }
-
-    async function handleSave() {
-        const hasChanges = JSON.stringify(editedItems) !== JSON.stringify(originalItemsRef.current);
-
-        if (!hasChanges) {
-            setEditBtnShow(false);
-            location.reload();
-            return;
-        }
-
-        setEditBtnShow(false);
-
-        const updatePromises = [];
-
-        editedItems.forEach((itemNew) => {
-            const itemOld = originalItemsRef.current.find(item => item.id === itemNew.id);
-
-            if (itemOld && itemNew.sum !== itemOld.sum) {
-                updatePromises.push(editSum(itemOld.id, itemNew.sum));
-            }
-        });
-
-        if (updatePromises.length > 0) {
-            try {
-                await Promise.all(updatePromises);
-                originalItemsRef.current = [...editedItems];
-            } catch (error) {
-                console.error('Помилка під час оновлення даних:', error);
-            }
-        } else {
-            setEditBtnShow(false);
-        }
-        location.reload();
     }
 }

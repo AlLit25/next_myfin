@@ -3,6 +3,37 @@ import {getTotalSum, getSortDataCat, getSortDataDate} from "@/lib/BaseHelper";
 import React from 'react';
 
 export default function ExpenseTable({data}) {
+    function GetExpenseItems({ data, sortData }) {
+        if (!data || typeof data !== 'object') {
+            return null;
+        }
+
+        return (
+            <>
+                {
+                    data.map(date => (
+                        <React.Fragment key={date}>
+                            <tr>
+                                <td colSpan="3">
+                                    <b>{new Date(date).toLocaleDateString('uk-UA')}</b>
+                                </td>
+                            </tr>
+                            {
+                                Object.entries(category).map(([code]) => (
+                                    sortData[date][code] !== undefined
+                                        ? <tr key={code}>
+                                            <td>{category[code]}</td>
+                                            <td>{sortData[date][code]}</td>
+                                        </tr>
+                                        : ''
+                                ))
+                            }
+                        </React.Fragment>
+                    ))}
+            </>
+        );
+    }
+
     if (data.length > 0) {
         const sortData = getSortDataCat(data);
         const totalSum  = getTotalSum(data);
@@ -33,35 +64,4 @@ export default function ExpenseTable({data}) {
             </div>
         );
     }
-}
-
-function GetExpenseItems({ data, sortData }) {
-    if (!data || typeof data !== 'object') {
-        return null;
-    }
-
-    return (
-        <>
-            {
-                data.map(date => (
-                    <React.Fragment key={date}>
-                        <tr>
-                            <td colSpan="3">
-                                <b>{new Date(date).toLocaleDateString('uk-UA')}</b>
-                            </td>
-                        </tr>
-                        {
-                            Object.entries(category).map(([code]) => (
-                                sortData[date][code] !== undefined
-                                    ? <tr key={code}>
-                                        <td>{category[code]}</td>
-                                        <td>{sortData[date][code]}</td>
-                                    </tr>
-                                    : ''
-                            ))
-                        }
-                    </React.Fragment>
-                ))}
-        </>
-    );
 }

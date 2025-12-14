@@ -31,7 +31,7 @@ export default function StatAll({ data, dateStart, dateEnd }) {
 
     if (todayDay > 10) {
         const targetDate = new Date(today);
-        targetDate.setDate(targetDate.getDate() - 8);
+        targetDate.setDate(targetDate.getDate() - 7);
         targetStr = targetDate.toISOString().split('T')[0];
 
         const targetIndex = allDates.findIndex(date => date === targetStr);
@@ -109,7 +109,7 @@ function GetColumn({ date, items, originalData, openDetail }) {
     const sumIncome = getSumOfDay(originalData.income, date);
     const sumExpense = getSumOfDay(originalData.expense, date);
     const dateObj = new Date(date);
-    // console.log(items);
+
     return (
         <div className="colum-expense">
             <div className="colum-date" onClick={() => openDetail(date)}>

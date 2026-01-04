@@ -41,6 +41,10 @@ input.i-default {
   z-index: 1000;
 }
 
+.mr {
+  margin-right: 5px;
+}
+
 .modal-dialog {
   max-width: 400px; /* Обмежуємо ширину для компактності */
   width: 100%;

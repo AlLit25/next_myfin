@@ -4,7 +4,6 @@ import {getStatistic, removeCookies} from "@/lib/DbHelper";
 import {useEffect, useState} from "react";
 import Load from "@/components/Load";
 import {getCurrentMonth} from "@/lib/DateHelper";
-import ExpenseAll from "@/components/statistic/ExpenseAll";
 import StatAll from "@/components/statistic/StatAll";
 
 export default function StatisticTable() {
@@ -58,6 +57,83 @@ export default function StatisticTable() {
         }
     };
 
+    function exportHandler() {
+        if (data.expense.length > 0) {
+            exportPivotWithStatsToCSV(data.expense, data.income);
+        }
+    }
+
+    const exportPivotWithStatsToCSV = (expense, income) => {
+        const allData = [...expense, ...income];
+        if (allData.length === 0) return;
+
+        // 1. Визначаємо діапазон дат
+        const dates = allData.map(d => new Date(d.created_at));
+        const minDate = new Date(Math.min(...dates));
+        const maxDate = new Date(Math.max(...dates));
+        const start = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+        const end = new Date(maxDate.getFullYear(), maxDate.getMonth() + 1, 0);
+
+        const dateLabels = [];
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+            dateLabels.push(d.toISOString().split('T')[0]);
+        }
+
+        // 2. Унікальні категорії та розрахунок загальних витрат
+        const categories = [...new Set(expense.map(e => e.category))].filter(Boolean).sort();
+        const totalExpensesSum = expense.reduce((acc, curr) => acc + Number(curr.sum), 0);
+
+        // 3. Заголовки (додаємо нові колонки в кінець)
+        const headerRow = ["Категорія / Дата", ...dateLabels, "ВСЬОГО", "% від витрат"];
+
+        // Допоміжна функція для сум
+        const getSumForDate = (dataArray, date, category = null) => {
+            return dataArray
+                .filter(item => item.created_at === date && (category === null || item.category === category))
+                .reduce((acc, curr) => acc + Number(curr.sum), 0);
+        };
+
+        const rows = [];
+
+        // --- РЯДОК ДОХОДУ ---
+        const incomeValues = dateLabels.map(date => getSumForDate(income, date));
+        const totalIncome = incomeValues.reduce((a, b) => a + b, 0);
+        rows.push(["ДОХІД", ...incomeValues.map(v => v || ""), totalIncome, "-"]);
+
+        // --- РЯДКИ ВИТРАТ ---
+        categories.forEach(cat => {
+            const dailyValues = dateLabels.map(date => getSumForDate(expense, date, cat));
+            const totalCatSum = dailyValues.reduce((a, b) => a + b, 0);
+            const percentage = totalExpensesSum > 0
+                ? ((totalCatSum / totalExpensesSum) * 100).toFixed(2) + "%"
+                : "0%";
+
+            rows.push([
+                cat,
+                ...dailyValues.map(v => v || ""),
+                totalCatSum,
+                percentage
+            ]);
+        });
+
+        // 4. РЯДОК "РАЗОМ ВИТРАТИ" (опціонально, для зручності)
+        const totalDailyExpenses = dateLabels.map(date => getSumForDate(expense, date));
+        rows.push(["ВСЬОГО ВИТРАТ", ...totalDailyExpenses.map(v => v || ""), totalExpensesSum, "100%"]);
+
+        // 5. Генерація та скачування
+        const csvContent = [
+            headerRow.join(","),
+            ...rows.map(r => r.join(","))
+        ].join("\n");
+
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `detailed_report_${minDate.getMonth() + 1}.csv`;
+        link.click();
+    };
+
     return (
         <div className="container">
             <div className="row">
@@ -83,6 +159,12 @@ export default function StatisticTable() {
                             data-refresh="statistics_table"
                             onClick={showData}>
                         Відобразити
+                    </button>
+                    <button type="button"
+                            className="btn btn-success mr"
+                            data-refresh="statistics_table"
+                            onClick={exportHandler}>
+                        У файл
                     </button>
                 </div>
             </div>
